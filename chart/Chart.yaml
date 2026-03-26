@@ -1,0 +1,16 @@
+apiVersion: v2
+name: usgs-pub-wh-mcp
+description: Helm chart for the USGS Publications Warehouse MCP server
+type: application
+version: 0.1.0
+appVersion: "0.2.0"
+keywords:
+  - mcp
+  - usgs
+  - api
+  - ai
+home: https://pubs.usgs.gov/documentation/web_service_documentation
+sources:
+  - https://pubs.usgs.gov/documentation/web_service_documentation
+maintainers:
+  - name: Navteca

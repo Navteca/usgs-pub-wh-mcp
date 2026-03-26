@@ -51,6 +51,12 @@ Main variables:
 - `IMAGE_URI`
   Full image URI including tag.
   Default: `607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:latest`
+- `IMAGE_PLATFORMS`
+  Platforms used when pushing the multi-arch image.
+  Default: `linux/amd64,linux/arm64`
+- `LOCAL_IMAGE_PLATFORM`
+  Platform used for a local non-pushed image build.
+  Default: `linux/amd64`
 - `AWS_PROFILE`
   Default: `navteca`
 - `AWS_REGION`
@@ -67,13 +73,27 @@ Main targets:
 - `make ecr-login IMAGE_URI=...`
   Logs into the ECR registry derived from `IMAGE_URI`.
 - `make build-image IMAGE_URI=...`
-  Builds the Docker image.
+  Builds a local single-platform Docker image and loads it into Docker.
 - `make push-image IMAGE_URI=...`
-  Pushes the Docker image.
+  Builds and pushes a multi-arch Docker image manifest.
 - `make image IMAGE_URI=...`
-  Runs the full flow: prepare env, login to ECR, build, push.
+  Runs the full publish flow: prepare env, login to ECR, buildx push for `linux/amd64` and `linux/arm64`.
 
 ## Common Commands
+
+Use this command now to build and push both `amd64` and `arm64`:
+
+```bash
+make image \
+  IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2
+```
+
+That command:
+
+- ensures `.env` contains `USGS_MCP_API_KEY` and `USGS_MCP_BEARER_TOKEN`
+- logs into ECR with the selected AWS profile
+- builds a multi-arch image for `linux/amd64` and `linux/arm64`
+- pushes the manifest and both platform images to ECR
 
 Prepare credentials:
 
@@ -87,14 +107,14 @@ Show the exact credentials used for the image:
 make print-image-env
 ```
 
-Build and push to ECR:
+Build and push to ECR as a multi-arch image:
 
 ```bash
 make image \
   IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2
 ```
 
-Build and push with a different AWS profile:
+Build and push the multi-arch image with a different AWS profile:
 
 ```bash
 make image \
@@ -102,7 +122,15 @@ make image \
   AWS_PROFILE=my-profile
 ```
 
-Build only:
+Build and push with explicit platforms:
+
+```bash
+make image \
+  IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2 \
+  IMAGE_PLATFORMS=linux/amd64,linux/arm64
+```
+
+Build only a local single-platform image:
 
 ```bash
 make build-image \
@@ -153,7 +181,7 @@ The manifests are in [`k8s/`](/Users/francisco/Downloads/Navteca/usgs-warehouse-
 
 Deploy flow:
 
-1. Build and push the image.
+1. Build and push the multi-arch image.
 2. Apply the manifests.
 3. Update the deployment image.
 4. Wait for rollout.

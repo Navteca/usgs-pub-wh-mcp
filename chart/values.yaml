@@ -1,0 +1,183 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 2
+
+image:
+  repository: 607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8000"
+
+podLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+  annotations: {}
+
+container:
+  port: 8000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+config:
+  env:
+    MCP_TRANSPORT: streamable-http
+    MCP_HOST: 0.0.0.0
+    MCP_PORT: "8000"
+    FASTMCP_STATELESS_HTTP: "true"
+    USGS_MCP_RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+    USGS_MCP_RATE_LIMIT_REQUESTS_PER_HOUR: "1000"
+    USGS_MCP_RATE_LIMIT_BURST_SIZE: "10"
+    USGS_MCP_MAX_QUERY_LENGTH: "500"
+    USGS_MCP_MAX_PAGE_SIZE: "100"
+    USGS_MCP_MAX_RESULTS_PER_SESSION: "100000"
+    USGS_MCP_REQUEST_TIMEOUT_SECONDS: "30"
+    USGS_MCP_CONNECT_TIMEOUT_SECONDS: "10"
+    USGS_MCP_ENFORCE_HTTPS: "true"
+    USGS_MCP_VERIFY_SSL: "true"
+    USGS_MCP_AUDIT_LOGGING_ENABLED: "true"
+    USGS_MCP_REDACT_SENSITIVE_FIELDS: "true"
+
+auth:
+  create: false
+  existingSecret: ""
+  secretName: ""
+  apiKey: ""
+  bearerToken: ""
+
+extraEnv: []
+extraEnvFrom: []
+
+tmpVolume:
+  enabled: true
+  mountPath: /tmp
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels: {}
+
+terminationGracePeriodSeconds: 30
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/limit-connections: "5"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Frame-Options "DENY" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-XSS-Protection "1; mode=block" always;
+      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  hosts:
+    - host: usgs-mcp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+      selectPolicy: Max
+
+pdb:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true
+  ingress:
+    allowedNamespaces: []
+    allowSameNamespace: true
+  egress:
+    dns: true
+    https:
+      enabled: true
+      cidrs:
+        - 0.0.0.0/0
+
+tests:
+  enabled: true
