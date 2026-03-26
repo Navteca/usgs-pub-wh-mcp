@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mcp-servers
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - network-policy.yaml
+  - hpa.yaml
+  - pdb.yaml
+
+commonLabels:
+  app.kubernetes.io/name: usgs-publications-mcp
+  app.kubernetes.io/version: "0.2.0"
+  app.kubernetes.io/managed-by: kustomize
+
+# Image customization (update for your registry)
+images:
+  - name: your-registry/usgs-publications-mcp
+    newName: your-registry/usgs-publications-mcp
+    newTag: v0.2.0

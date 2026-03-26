@@ -1,0 +1,43 @@
+# Version control
+.git/
+.gitignore
+
+# Virtual environments
+.venv/
+
+# Environment config (contains secrets - NEVER include in image)
+.env
+
+# IDE / editor config
+.cursor/
+.vscode/
+.idea/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+wheels/
+
+# Tests (not needed in production image)
+tests/
+
+# Documentation (not needed in production image)
+*.md
+!README.md
+
+# Kubernetes manifests
+k8s/
+
+# Scripts (not needed in production image)
+scripts/
+
+# Docker files (prevent recursive builds)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Audit report
+AUDIT.md

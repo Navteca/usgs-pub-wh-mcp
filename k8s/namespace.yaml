@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mcp-servers
+  labels:
+    app.kubernetes.io/name: mcp-servers
+    app.kubernetes.io/component: ai-infrastructure

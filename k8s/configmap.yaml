@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: usgs-mcp-config
+  namespace: mcp-servers
+  labels:
+    app: usgs-publications-mcp
+data:
+  # Rate limiting configuration
+  USGS_MCP_RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+  USGS_MCP_RATE_LIMIT_REQUESTS_PER_HOUR: "1000"
+  USGS_MCP_RATE_LIMIT_BURST_SIZE: "10"
+  
+  # Request limits
+  USGS_MCP_MAX_QUERY_LENGTH: "500"
+  USGS_MCP_MAX_PAGE_SIZE: "100"
+  USGS_MCP_MAX_RESULTS_PER_SESSION: "100000"
+  
+  # Timeouts
+  USGS_MCP_REQUEST_TIMEOUT_SECONDS: "30"
+  USGS_MCP_CONNECT_TIMEOUT_SECONDS: "10"
+  
+  # Security settings
+  USGS_MCP_ENFORCE_HTTPS: "true"
+  USGS_MCP_VERIFY_SSL: "true"
+  USGS_MCP_AUDIT_LOGGING_ENABLED: "true"
+  USGS_MCP_REDACT_SENSITIVE_FIELDS: "true"
