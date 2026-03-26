@@ -16,3 +16,4 @@ wheels/
 .cursor/
 .github/
 .python-version
+*.lock
