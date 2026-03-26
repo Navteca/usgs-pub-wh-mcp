@@ -1,180 +1,204 @@
-# USGS Publications Warehouse MCP Server (Security Hardened)
+# USGS Publications Warehouse MCP Server
 
-An MCP (Model Context Protocol) server that provides **secure** access to the [USGS Publications Warehouse API](https://pubs.usgs.gov/documentation/web_service_documentation), allowing LLMs to search and retrieve USGS scientific publications.
+An MCP server that exposes the USGS Publications Warehouse API over MCP with authentication, validation, rate limiting, and audit logging.
 
-## Security Features
+## What This Repo Includes
 
-This implementation follows security best practices from multiple authoritative sources:
+- Local development with `uv`
+- Docker image build with baked `.env` credentials
+- ECR login and push through `make`
+- Kubernetes manifests under `k8s/`
+- HTTP MCP endpoint at `POST /mcp`
+- Health endpoint at `GET /health`
 
-| Security Control | Description |
-|-----------------|-------------|
-| **Input Validation** | All inputs sanitized against injection attacks |
-| **Rate Limiting** | Token bucket with per-minute/hour limits |
-| **Circuit Breaker** | Automatic failover on upstream errors |
-| **Audit Logging** | Structured JSON logging for SIEM integration |
-| **TLS Enforcement** | HTTPS required, TLS 1.2+ with cert verification |
-| **URL Allowlisting** | Only approved endpoints accessible |
+## Quick Start
 
-See [SECURITY.md](SECURITY.md) for complete security documentation.
-
-## Features
-
-- **Search Publications**: Full-text search across all USGS publications
-- **Title Matching**: Find publications by exact title match
-- **Direct Lookup**: Retrieve a specific publication by its index ID
-- **Pagination**: Browse large result sets with page_size and page_number
-
-## Installation
+Install dependencies:
 
 ```bash
-# Using uv (recommended)
 uv sync
-
-# Or using pip
-pip install -e .
 ```
 
-## Usage
-
-### Running the Server
+Run locally:
 
 ```bash
-# Using uv
-uv run python main.py
-
-# Or directly
-python main.py
+uv run python main.py --transport streamable-http --host 0.0.0.0 --port 8000
 ```
 
-### Configuring with Claude Desktop
-
-Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
-
-```json
-{
-  "mcpServers": {
-    "usgs-publications": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/path/to/usgs-warehouse-mcp",
-        "run",
-        "main.py"
-      ]
-    }
-  }
-}
-```
-
-### Configuring with Cursor
-
-Add to your Cursor MCP settings (`.cursor/mcp.json`):
-
-```json
-{
-  "mcpServers": {
-    "usgs-publications": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/path/to/usgs-warehouse-mcp",
-        "run",
-        "main.py"
-      ]
-    }
-  }
-}
-```
-
-## Available Tools
-
-### search_publications
-
-The single tool for all USGS publication queries.
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `query` | string (optional) | Full-text search across all publication fields |
-| `title` | string (optional) | Exact match within publication titles |
-| `index_id` | string (optional) | Retrieve a specific publication by its unique ID |
-| `page_size` | integer (optional) | Results per page, 1–100 (default 10) |
-| `page_number` | integer (optional) | Page number for pagination (default 1) |
-
-**Note:** `index_id` cannot be combined with `query` or `title`. Use it alone for direct lookups.
-
-## Configuration
-
-Security settings can be customized via environment variables:
+Health check:
 
 ```bash
-# Rate limiting
-export USGS_MCP_RATE_LIMIT_REQUESTS_PER_MINUTE=60
-export USGS_MCP_RATE_LIMIT_REQUESTS_PER_HOUR=1000
-
-# Request limits
-export USGS_MCP_MAX_QUERY_LENGTH=500
-export USGS_MCP_MAX_PAGE_SIZE=100
-
-# Timeouts
-export USGS_MCP_REQUEST_TIMEOUT_SECONDS=30
-
-# Security
-export USGS_MCP_ENFORCE_HTTPS=true
-export USGS_MCP_VERIFY_SSL=true
-export USGS_MCP_AUDIT_LOGGING_ENABLED=true
+curl http://localhost:8000/health
 ```
 
-## Example Queries
+## Environment
 
-Once connected to an LLM, you can ask questions like:
+The server loads `.env` from the repo root.
 
-- "Search for USGS publications about groundwater contamination"
-- "Find publications with 'water quality' in the title"
-- "Find earthquake publications with 'hazard' in the title"
-- "Get the publication with index_id ofr20151076"
-- "What are the most recent USGS publications?"
-- "Publications about sea-level rise in Florida"
+Required auth variables:
 
-## Project Structure
-
-```
-usgs-warehouse-mcp/
-├── main.py                 # MCP server with security controls
-├── security/
-│   ├── __init__.py
-│   ├── config.py           # Security configuration
-│   ├── validation.py       # Input validation & sanitization
-│   ├── rate_limiter.py     # Rate limiting & circuit breaker
-│   ├── audit.py            # Audit logging
-│   ├── http_client.py      # Secure HTTP client
-│   ├── schema_compat.py    # OpenAI schema compatibility
-│   └── tool_registry.py    # Tool registry for progressive disclosure
-├── tests/
-│   ├── test_user_queries.py      # User query validation tests
-│   ├── test_api_integration.py   # API integration tests
-│   ├── test_tool_discovery.py    # Tool registry tests
-│   └── test_owasp_llm_top10.py  # OWASP security tests
-├── pyproject.toml
-├── README.md
-├── SECURITY.md             # Security documentation
-└── DEPLOYMENT.md           # Deployment guide
+```bash
+USGS_MCP_API_KEY=
+USGS_MCP_BEARER_TOKEN=
 ```
 
-## API Reference
+If either value is missing, the `Makefile` generates a valid random value and writes it into `.env`.
 
-This MCP server wraps the USGS Publications Warehouse REST API:
-- Base URL: `https://pubs.usgs.gov/pubs-services/`
-- [Full API Documentation](https://pubs.usgs.gov/documentation/web_service_documentation)
+## Makefile Workflow
 
-## Security Resources
+Main variables:
 
-This implementation follows best practices from:
-- [MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices)
-- [WorkOS MCP Security Guide](https://workos.com/blog/mcp-security-risks-best-practices)
-- [Aembit MCP Security](https://aembit.io/blog/securing-mcp-server-communications-best-practices/)
-- [Red Hat MCP Security](https://www.redhat.com/en/blog/model-context-protocol-mcp-understanding-security-risks-and-controls)
-- [Anthropic Code Execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)
+- `IMAGE_URI`
+  Full image URI including tag.
+  Default: `607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:latest`
+- `AWS_PROFILE`
+  Default: `navteca`
+- `AWS_REGION`
+  Default: `us-east-1`
+- `ENV_FILE`
+  Default: `.env`
 
-## License
+Main targets:
 
-Public domain (as this wraps a US Government API)
+- `make prepare-env`
+  Ensures `.env` exists and fills in missing auth values.
+- `make print-image-env`
+  Prints the auth values that will be used for the image build.
+- `make ecr-login IMAGE_URI=...`
+  Logs into the ECR registry derived from `IMAGE_URI`.
+- `make build-image IMAGE_URI=...`
+  Builds the Docker image.
+- `make push-image IMAGE_URI=...`
+  Pushes the Docker image.
+- `make image IMAGE_URI=...`
+  Runs the full flow: prepare env, login to ECR, build, push.
+
+## Common Commands
+
+Prepare credentials:
+
+```bash
+make prepare-env
+```
+
+Show the exact credentials used for the image:
+
+```bash
+make print-image-env
+```
+
+Build and push to ECR:
+
+```bash
+make image \
+  IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2
+```
+
+Build and push with a different AWS profile:
+
+```bash
+make image \
+  IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2 \
+  AWS_PROFILE=my-profile
+```
+
+Build only:
+
+```bash
+make build-image \
+  IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2
+```
+
+## Local Docker Usage
+
+Run the image:
+
+```bash
+docker run --rm -p 8000:8000 \
+  607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2
+```
+
+Load credentials from `.env`:
+
+```bash
+export USGS_MCP_API_KEY="$(sed -n 's/^USGS_MCP_API_KEY=//p' .env | tail -n 1)"
+export USGS_MCP_BEARER_TOKEN="$(sed -n 's/^USGS_MCP_BEARER_TOKEN=//p' .env | tail -n 1)"
+```
+
+Initialize MCP over HTTP:
+
+```bash
+curl -X POST http://localhost:8000/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "X-API-Key: ${USGS_MCP_API_KEY}" \
+  -H "Authorization: Bearer ${USGS_MCP_BEARER_TOKEN}" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"local-test","version":"1.0"}}}'
+```
+
+Call the tool:
+
+```bash
+curl -X POST http://localhost:8000/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "X-API-Key: ${USGS_MCP_API_KEY}" \
+  -H "Authorization: Bearer ${USGS_MCP_BEARER_TOKEN}" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_publications","arguments":{"query":"groundwater contamination","page_size":3}}}'
+```
+
+## Kubernetes
+
+The manifests are in [`k8s/`](/Users/francisco/Downloads/Navteca/usgs-warehouse-mcp/k8s). The service is [`usgs-publications-mcp`](/Users/francisco/Downloads/Navteca/usgs-warehouse-mcp/k8s/service.yaml) in the `mcp-servers` namespace and exposes port `80` to container port `8000`.
+
+Deploy flow:
+
+1. Build and push the image.
+2. Apply the manifests.
+3. Update the deployment image.
+4. Wait for rollout.
+5. Port-forward the service.
+
+Commands:
+
+```bash
+make image \
+  IMAGE_URI=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2
+
+kubectl apply -k k8s
+
+kubectl set image deployment/usgs-publications-mcp \
+  mcp-server=607399646027.dkr.ecr.us-east-1.amazonaws.com/navteca/images/usgs-mcp:0.1.2 \
+  -n mcp-servers
+
+kubectl rollout status deployment/usgs-publications-mcp -n mcp-servers
+
+kubectl port-forward svc/usgs-publications-mcp 8000:80 -n mcp-servers
+```
+
+Test through the port-forward:
+
+```bash
+curl http://localhost:8000/health
+
+curl -X POST http://localhost:8000/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "X-API-Key: ${USGS_MCP_API_KEY}" \
+  -H "Authorization: Bearer ${USGS_MCP_BEARER_TOKEN}" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"k8s-port-forward","version":"1.0"}}}'
+```
+
+## Tool Summary
+
+The server exposes one MCP tool:
+
+- `search_publications`
+  Accepts `query`, `title`, `index_id`, `page_size`, and `page_number`.
+  `index_id` must be used alone.
+
+## Reference
+
+- API docs: <https://pubs.usgs.gov/documentation/web_service_documentation>
+- Security details: [SECURITY.md](/Users/francisco/Downloads/Navteca/usgs-warehouse-mcp/SECURITY.md)
+- Deployment notes: [DEPLOYMENT.md](/Users/francisco/Downloads/Navteca/usgs-warehouse-mcp/DEPLOYMENT.md)
