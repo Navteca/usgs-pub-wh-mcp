@@ -41,10 +41,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "usgs-pub-wh-mcp.configMapName" . }}
-            {{- if or .Values.auth.create .Values.auth.existingSecret }}
-            - secretRef:
-                name: {{ include "usgs-pub-wh-mcp.authSecretName" . }}
-            {{- end }}
             {{- with .Values.extraEnvFrom }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

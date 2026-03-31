@@ -5,17 +5,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Authentication (must be provided via .env or environment)
-      - USGS_MCP_API_KEY=${USGS_MCP_API_KEY}
-      - USGS_MCP_BEARER_TOKEN=${USGS_MCP_BEARER_TOKEN}
-      # Transport: streamable-http exposes POST /mcp (required for .../mcp URLs and MCP Inspector)
+      # Transport: streamable-http exposes POST /mcp
       - MCP_TRANSPORT=streamable-http
       - MCP_HOST=0.0.0.0
       - MCP_PORT=8000
+      - MCP_DISABLE_DNS_REBINDING_PROTECTION=true
       # Stateless HTTP mode: avoid session lookup/session-not-found 404 behavior
       - FASTMCP_STATELESS_HTTP=true
-      # Allow ngrok host so remote clients can connect (comma-separated if you add more)
-      - MCP_ALLOWED_HOSTS=ce6c-93-156-195-113.ngrok-free.app
       # Security configuration (override defaults as needed)
       - USGS_MCP_RATE_LIMIT_REQUESTS_PER_MINUTE=60
       - USGS_MCP_RATE_LIMIT_REQUESTS_PER_HOUR=1000

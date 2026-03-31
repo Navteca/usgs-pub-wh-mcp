@@ -12,7 +12,7 @@ wheels/
 # Environment config (contains secrets)
 .env
 
-# IDE / editor config (may contain secrets such as bearer tokens)
+# IDE / editor config
 .cursor/
 .github/
 .python-version

@@ -66,15 +66,3 @@ ConfigMap name.
 {{- printf "%s-config" (include "usgs-pub-wh-mcp.fullname" .) -}}
 {{- end -}}
 
-{{/*
-Secret name.
-*/}}
-{{- define "usgs-pub-wh-mcp.authSecretName" -}}
-{{- if .Values.auth.existingSecret -}}
-{{- .Values.auth.existingSecret -}}
-{{- else if .Values.auth.secretName -}}
-{{- .Values.auth.secretName -}}
-{{- else -}}
-{{- printf "%s-auth" (include "usgs-pub-wh-mcp.fullname" .) -}}
-{{- end -}}
-{{- end -}}

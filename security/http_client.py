@@ -204,11 +204,9 @@ class SecureHTTPClient:
         elif self.config.min_tls_version == "TLSv1.3":
             context.minimum_version = ssl.TLSVersion.TLSv1_3
         
-        # Disable older protocols explicitly
+        # minimum_version already enforces modern TLS without deprecated flags.
         context.options |= ssl.OP_NO_SSLv2
         context.options |= ssl.OP_NO_SSLv3
-        context.options |= ssl.OP_NO_TLSv1
-        context.options |= ssl.OP_NO_TLSv1_1
         
         # Require certificate verification
         if self.config.verify_ssl:

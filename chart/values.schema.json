@@ -27,16 +27,6 @@
       },
       "required": ["repository", "tag", "pullPolicy"]
     },
-    "auth": {
-      "type": "object",
-      "properties": {
-        "create": { "type": "boolean" },
-        "existingSecret": { "type": "string" },
-        "secretName": { "type": "string" },
-        "apiKey": { "type": "string" },
-        "bearerToken": { "type": "string" }
-      }
-    },
     "service": {
       "type": "object",
       "properties": {

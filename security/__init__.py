@@ -14,12 +14,6 @@ Do not load .env here to avoid double-loading.
 from .config import SecurityConfig, get_security_config
 from .validation import InputValidator, ValidationError
 from .rate_limiter import RateLimiter, RateLimitExceeded
-from .auth import (
-    AuthManager,
-    AuthMiddleware,
-    get_auth_manager,
-    reset_auth_manager,
-)
 from .audit import (
     AuditLogger,
     AuditEvent,
@@ -29,14 +23,6 @@ from .audit import (
 )
 from .http_client import SecureHTTPClient
 from .context_limits import ContextSizeLimits, ContextLimiter, ContextLimitExceededError
-from .bearer import (
-    BearerTokenManager,
-    BearerTokenValidationResult,
-    BearerTokenLockedOutError,
-    TokenMetadata,
-    get_bearer_token_manager,
-    reset_bearer_token_manager,
-)
 from .tracing import (
     TraceContext,
     TraceSpan,
@@ -58,10 +44,6 @@ __all__ = [
     "ValidationError",
     "RateLimiter",
     "RateLimitExceeded",
-    "AuthManager",
-    "AuthMiddleware",
-    "get_auth_manager",
-    "reset_auth_manager",
     "AuditLogger",
     "AuditEvent",
     "SecurityEventLogger",
@@ -71,13 +53,6 @@ __all__ = [
     "ContextSizeLimits",
     "ContextLimiter",
     "ContextLimitExceededError",
-    # Bearer token auth
-    "BearerTokenManager",
-    "BearerTokenValidationResult",
-    "BearerTokenLockedOutError",
-    "TokenMetadata",
-    "get_bearer_token_manager",
-    "reset_bearer_token_manager",
     # Tracing
     "TraceContext",
     "TraceSpan",

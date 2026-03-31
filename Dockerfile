@@ -23,9 +23,6 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-ARG USGS_MCP_API_KEY=""
-ARG USGS_MCP_BEARER_TOKEN=""
-
 # Copy virtual environment and source from builder
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app/main.py /app/
@@ -34,12 +31,6 @@ COPY --from=builder /app/security /app/security
 # Set environment variables
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
-
-# Persist the credentials used at build time so main.py can load /app/.env.
-RUN printf '%s\n' \
-    "USGS_MCP_API_KEY=${USGS_MCP_API_KEY}" \
-    "USGS_MCP_BEARER_TOKEN=${USGS_MCP_BEARER_TOKEN}" \
-    > /app/.env
 
 # Security: Run as non-root user
 RUN useradd --create-home --shell /bin/bash mcpuser
@@ -59,5 +50,5 @@ ENV MCP_PORT=8000
 # Force stateless streamable-http to avoid session-id 404 behavior
 ENV FASTMCP_STATELESS_HTTP=true
 
-# Run the MCP server (streamable-http exposes POST /mcp and GET /health for remote/ngrok use)
+# Run the MCP server (streamable-http exposes POST /mcp and GET /health)
 CMD ["python", "main.py", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000"]
