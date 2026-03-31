@@ -38,3 +38,11 @@ dev = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+addopts = "--cov --cov-report=term-missing --cov-fail-under=100"
+
+[tool.coverage.run]
+source = ["security.tool_registry"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true

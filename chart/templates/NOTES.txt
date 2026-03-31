@@ -4,10 +4,8 @@
 2. Test the health endpoint:
    curl http://127.0.0.1:8000/health
 
-3. If you supplied Kubernetes auth values, test the MCP endpoint:
+3. Test the MCP endpoint:
    curl -X POST http://127.0.0.1:8000/mcp \
      -H "Content-Type: application/json" \
      -H "Accept: application/json, text/event-stream" \
-     -H "X-API-Key: <api-key>" \
-     -H "Authorization: Bearer <bearer-token>" \
      -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"helm","version":"1.0"}}}'

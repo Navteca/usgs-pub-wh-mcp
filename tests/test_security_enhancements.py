@@ -933,6 +933,36 @@ def run_all_tests():
         return 0
 
 
+for _name in (
+    "test_audit_severity_and_categories",
+    "test_audit_event_siem_format",
+    "test_audit_request_id_tracking",
+    "test_security_event_logger_helper",
+    "test_audit_log_rate_limit_attack_indicator",
+    "test_siem_metadata_log_rotation",
+    "test_trace_context",
+    "test_trace_span_context_manager",
+    "test_tracing_manager_singleton",
+    "test_traced_decorator",
+    "test_http_context_propagation",
+    "test_nested_spans",
+    "test_context_size_limits_dataclass",
+    "test_context_limiter_size_calculation",
+    "test_context_limiter_truncation",
+    "test_context_limiter_integration",
+    "test_validation_logging",
+    "test_rate_limiter_logging",
+    "test_http_client_context_integration",
+    "test_main_formatting_integration",
+):
+    globals()[_name].__test__ = False
+
+
+def test_security_enhancements_suite() -> None:
+    """Pytest entrypoint for this legacy tuple-based suite."""
+    assert run_all_tests() == 0
+
+
 if __name__ == "__main__":
     exit_code = run_all_tests()
     sys.exit(exit_code)

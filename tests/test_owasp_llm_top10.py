@@ -56,6 +56,7 @@ class Severity(Enum):
 
 class TestResult(Enum):
     """Test result status."""
+    __test__ = False
     PASS = "PASS"
     FAIL = "FAIL"
     WARN = "WARN"
@@ -78,6 +79,7 @@ class SecurityFinding:
 @dataclass
 class TestSuite:
     """Collection of security test results."""
+    __test__ = False
     findings: list[SecurityFinding] = field(default_factory=list)
     start_time: datetime = field(default_factory=datetime.now)
     end_time: datetime | None = None

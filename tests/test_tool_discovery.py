@@ -298,6 +298,23 @@ def run_all_tests():
         return 0
 
 
+for _name in (
+    "test_list_tools",
+    "test_list_tools_by_category",
+    "test_search_tools",
+    "test_search_tools_detail_levels",
+    "test_get_tool_definition",
+    "test_nonexistent_tool",
+    "test_no_stale_tools",
+):
+    globals()[_name].__test__ = False
+
+
+def test_tool_discovery_suite() -> None:
+    """Pytest entrypoint for this legacy tuple-based suite."""
+    assert run_all_tests() == 0
+
+
 if __name__ == "__main__":
     exit_code = run_all_tests()
     sys.exit(exit_code)

@@ -66,17 +66,6 @@ class SecurityConfig:
     session_timeout_minutes: int = 30
     max_concurrent_requests: int = 5
 
-    # Bearer token authentication settings
-    bearer_token_rotation_grace_seconds: int = 300
-    bearer_brute_force_fail_threshold: int = 5
-    bearer_brute_force_window_seconds: int = 60
-    bearer_brute_force_lockout_seconds: int = 300
-    bearer_token_max_length: int = 512
-
-    # Proxy header trust (only for deployments behind trusted reverse proxies)
-    trust_proxy_headers: bool = False
-    trusted_proxy_ips: tuple[str, ...] = ()
-    
     # Sensitive fields to redact in logs
     SENSITIVE_FIELDS: ClassVar[frozenset[str]] = frozenset({
         "email", "password", "token", "api_key", "secret", "credential"
@@ -102,14 +91,6 @@ class SecurityConfig:
             except (ValueError, TypeError):
                 return default
 
-        def get_csv_env(key: str, default: tuple[str, ...]) -> tuple[str, ...]:
-            env_key = f"USGS_MCP_{key.upper()}"
-            value = os.environ.get(env_key)
-            if value is None:
-                return default
-            items = tuple(part.strip() for part in value.split(",") if part.strip())
-            return items or default
-        
         return cls(
             rate_limit_requests_per_minute=get_env(
                 "rate_limit_requests_per_minute", 60, int
@@ -140,21 +121,6 @@ class SecurityConfig:
             redact_sensitive_fields=get_env("redact_sensitive_fields", True, bool),
             session_timeout_minutes=get_env("session_timeout_minutes", 30, int),
             max_concurrent_requests=get_env("max_concurrent_requests", 5, int),
-            bearer_token_rotation_grace_seconds=get_env(
-                "bearer_token_rotation_grace_seconds", 300, int
-            ),
-            bearer_brute_force_fail_threshold=get_env(
-                "bearer_brute_force_fail_threshold", 5, int
-            ),
-            bearer_brute_force_window_seconds=get_env(
-                "bearer_brute_force_window_seconds", 60, int
-            ),
-            bearer_brute_force_lockout_seconds=get_env(
-                "bearer_brute_force_lockout_seconds", 300, int
-            ),
-            bearer_token_max_length=get_env("bearer_token_max_length", 512, int),
-            trust_proxy_headers=get_env("trust_proxy_headers", False, bool),
-            trusted_proxy_ips=get_csv_env("trusted_proxy_ips", ()),
         )
 
 

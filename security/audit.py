@@ -36,7 +36,6 @@ class SecurityEventCategory(str, Enum):
     Security event categories for SIEM filtering and incident response.
     Use these tags to categorize all security-related log events.
     """
-    AUTHENTICATION = "AUTHENTICATION"
     AUTHORIZATION = "AUTHORIZATION"
     INPUT_VALIDATION = "INPUT_VALIDATION"
     RATE_LIMITING = "RATE_LIMITING"
@@ -61,8 +60,6 @@ class AuditEventType(str, Enum):
     SUSPICIOUS_ACTIVITY = "suspicious_activity"
     CONFIG_CHANGE = "config_change"
     POTENTIAL_ATTACK = "potential_attack"
-    AUTH_SUCCESS = "auth_success"
-    AUTH_FAILURE = "auth_failure"
 
 
 class AuditSeverity(str, Enum):
@@ -97,8 +94,6 @@ _EVENT_TYPE_METADATA: dict[AuditEventType, tuple[AuditSeverity, AuditEventCatego
     AuditEventType.SUSPICIOUS_ACTIVITY: (AuditSeverity.WARNING, AuditEventCategory.SECURITY),
     AuditEventType.CONFIG_CHANGE: (AuditSeverity.WARNING, AuditEventCategory.SYSTEM),
     AuditEventType.POTENTIAL_ATTACK: (AuditSeverity.CRITICAL, AuditEventCategory.SECURITY),
-    AuditEventType.AUTH_SUCCESS: (AuditSeverity.INFO, AuditEventCategory.SECURITY),
-    AuditEventType.AUTH_FAILURE: (AuditSeverity.WARNING, AuditEventCategory.SECURITY),
 }
 
 # SIEM integration metadata and log rotation hints
@@ -781,56 +776,6 @@ class SecurityEventLogger:
                 "action": "Block source; escalate to security team",
                 "priority": "CRITICAL",
             },
-        )
-        self._audit._log_event(event)
-
-    def log_auth(
-        self,
-        success: bool,
-        auth_method: str,
-        source_ip: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        failure_reason: Optional[str] = None,
-        tool_name: str = "auth",
-    ) -> None:
-        """Log an authentication attempt (success or failure).
-
-        Args:
-            success: Whether authentication succeeded
-            auth_method: Method used (e.g., 'api_key', 'bearer_token')
-            source_ip: Client IP (redacted in logs if sensitive)
-            user_agent: Client user agent
-            failure_reason: Reason for failure (only when success=False)
-            tool_name: Context name for the event
-        """
-        if not self._audit.config.audit_logging_enabled:
-            return
-
-        event_type = AuditEventType.AUTH_SUCCESS if success else AuditEventType.AUTH_FAILURE
-        security_extra = {
-            "auth_method": auth_method,
-            "what_happened": "Authentication succeeded" if success else "Authentication failed",
-            "trigger": tool_name,
-            "where": "authentication",
-            "when": _now_iso8601(),
-        }
-        if source_ip:
-            security_extra["source_ip"] = source_ip
-        if user_agent:
-            security_extra["user_agent"] = user_agent[:500]
-        if not success and failure_reason:
-            security_extra["failure_reason"] = failure_reason
-
-        event = self._audit._create_event(
-            event_type,
-            tool_name,
-            security_extra=security_extra,
-            security_category=SecurityEventCategory.AUTHENTICATION.value,
-            error_message=failure_reason if not success else None,
-            actionable_info={
-                "action": "Block source if repeated failures" if not success else None,
-                "priority": "HIGH" if not success else None,
-            } if not success else None,
         )
         self._audit._log_event(event)
 

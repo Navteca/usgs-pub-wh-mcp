@@ -402,6 +402,20 @@ def run_all_tests():
         return 0
 
 
+for _name in (
+    "test_input_validation",
+    "test_rate_limiter",
+    "test_security_config",
+    "test_context_limits",
+):
+    globals()[_name].__test__ = False
+
+
+def test_security_controls_suite() -> None:
+    """Pytest entrypoint for this legacy tuple-based suite."""
+    assert run_all_tests() == 0
+
+
 if __name__ == "__main__":
     exit_code = run_all_tests()
     sys.exit(exit_code)

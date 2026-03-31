@@ -22,9 +22,7 @@ Security Best Practices Sources:
 """
 
 import logging
-import os
 import re
-from pathlib import Path
 from typing import Annotated
 
 import httpx
@@ -34,7 +32,6 @@ from pydantic import Field
 from starlette.responses import JSONResponse
 
 from security.audit import get_audit_logger
-from security.auth import AuthMiddleware, get_auth_manager
 from security.config import get_security_config
 from security.context_limits import get_context_limiter
 from security.http_client import SecureHTTPClientError, get_http_client
@@ -42,14 +39,7 @@ from security.rate_limiter import RateLimitExceeded
 from security.schema_compat import transform_schema_for_openai
 from security.validation import InputValidator, ValidationError
 
-# ---------------------------------------------------------------------------
-# Load .env file BEFORE any security imports (they read env vars at import time)
-# ---------------------------------------------------------------------------
-_env_path = Path(__file__).parent / ".env"
-if _env_path.is_file():
-    load_dotenv(_env_path, override=False)
-
-# Security imports
+load_dotenv(override=False)
 
 # Configure logging
 logging.basicConfig(
@@ -57,41 +47,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------
-# Verify .env was loaded and required credentials are present
-# ---------------------------------------------------------------------------
-
-
-def _verify_env() -> None:
-    """Check that the .env file exists and critical variables are set."""
-    if _env_path.is_file():
-        logger.info("Loaded environment from %s", _env_path)
-    else:
-        logger.warning(
-            "No .env file found at %s — credentials will be generated randomly on each start. "
-            "Copy .env.example to .env and fill in your values for persistent credentials.",
-            _env_path,
-        )
-        return
-
-    missing = []
-    if not os.environ.get("USGS_MCP_API_KEY", "").strip():
-        missing.append("USGS_MCP_API_KEY")
-    if not os.environ.get("USGS_MCP_BEARER_TOKEN", "").strip():
-        missing.append("USGS_MCP_BEARER_TOKEN")
-
-    if missing:
-        logger.warning(
-            "The following variables are empty in .env (credentials will be generated randomly): %s",
-            ", ".join(missing),
-        )
-    else:
-        logger.info(
-            "Static credentials loaded from .env (API key + Bearer token)")
-
-
-_verify_env()
 
 # Initialize security components
 config = get_security_config()
@@ -101,7 +56,7 @@ context_limiter = get_context_limiter()
 
 # Initialize the MCP server.
 # stateless_http=True: every request gets a new transport; no session lookup, so no 404 "session not found".
-# Recommended when exposing via ngrok or behind load balancers. Overridable via FASTMCP_STATELESS_HTTP=false.
+# Recommended when exposing behind load balancers. Overridable via FASTMCP_STATELESS_HTTP=false.
 mcp = FastMCP(
     "USGS Publications Warehouse",
     stateless_http=True,
@@ -233,7 +188,7 @@ BASE_URL = "https://pubs.usgs.gov/pubs-services"
 
 @mcp.custom_route("/health", methods=["GET"])
 async def health_check(request):
-    """Health check endpoint (skips auth - for load balancers and monitoring)."""
+    """Health check endpoint for load balancers and monitoring."""
     return JSONResponse({"status": "ok", "service": "usgs-warehouse-mcp"})
 
 
@@ -588,20 +543,12 @@ def main():
         help="Port to bind to for HTTP transports (default: 8000)"
     )
     parser.add_argument(
-        "--allowed-hosts",
-        nargs="*",
-        default=os.environ.get("MCP_ALLOWED_HOSTS", "").split(
-            ",") if os.environ.get("MCP_ALLOWED_HOSTS") else None,
-        help="Additional allowed hosts for HTTP transports (e.g., '*.ngrok-free.app' or 'myapp.example.com'). "
-             "Can also set MCP_ALLOWED_HOSTS env var (comma-separated)"
-    )
-    parser.add_argument(
         "--disable-dns-rebinding-protection",
         action="store_true",
-        default=os.environ.get("MCP_DISABLE_DNS_REBINDING_PROTECTION", "").lower() in (
+        default=os.environ.get("MCP_DISABLE_DNS_REBINDING_PROTECTION", "true").lower() in (
             "true", "1", "yes"),
-        help="Disable DNS rebinding protection (NOT recommended for production). "
-             "Can also set MCP_DISABLE_DNS_REBINDING_PROTECTION=true"
+        help="Disable DNS rebinding protection (default: true for internal-only deployments). "
+             "Can also set MCP_DISABLE_DNS_REBINDING_PROTECTION=true|false"
     )
 
     args = parser.parse_args()
@@ -618,23 +565,19 @@ def main():
         # SSE transport endpoints:
         #   GET  /sse      - SSE connection endpoint
         #   POST /messages - Message endpoint
-        #   GET  /health   - Health check (no auth)
+        #   GET  /health   - Health check
         logger.info(
             f"SSE endpoints: GET /sse, POST /messages, GET /health on http://{args.host}:{args.port}")
         mcp.settings.host = args.host
         mcp.settings.port = args.port
         _configure_transport_security(args)
-        auth_manager = get_auth_manager()
-        creds = auth_manager.get_plaintext_credentials()
-        _display_auth_credentials(creds)
         starlette_app = mcp.sse_app()
-        wrapped_app = AuthMiddleware(starlette_app, auth_manager=auth_manager)
         import anyio
         import uvicorn
 
         async def _run():
             config = uvicorn.Config(
-                wrapped_app,
+                starlette_app,
                 host=mcp.settings.host,
                 port=mcp.settings.port,
                 log_level=mcp.settings.log_level.lower(),
@@ -644,25 +587,23 @@ def main():
         anyio.run(_run)
     elif args.transport == "streamable-http":
         # Streamable HTTP transport endpoint:
-        #   POST /mcp - Main MCP endpoint
-        #   GET  /health - Health check (no auth)
+        #   POST /mcp - MCP endpoint
+        #   GET  /health - Health check
         logger.info(
-            f"HTTP endpoint: POST /mcp, GET /health on http://{args.host}:{args.port}")
+            "HTTP endpoints: POST /mcp, "
+            f"GET /health on http://{args.host}:{args.port}"
+        )
         mcp.settings.host = args.host
         mcp.settings.port = args.port
         _configure_transport_security(args)
-        auth_manager = get_auth_manager()
-        creds = auth_manager.get_plaintext_credentials()
-        _display_auth_credentials(creds)
         starlette_app = mcp.streamable_http_app()
-        # Stateless mode: no session lookup, so no 404. Auth only.
-        wrapped_app = AuthMiddleware(starlette_app, auth_manager=auth_manager)
+        # Stateless mode: no session lookup, so no 404.
         import anyio
         import uvicorn
 
         async def _run():
             config = uvicorn.Config(
-                wrapped_app,
+                starlette_app,
                 host=mcp.settings.host,
                 port=mcp.settings.port,
                 log_level=mcp.settings.log_level.lower(),
@@ -672,37 +613,12 @@ def main():
         anyio.run(_run)
 
 
-def _display_auth_credentials(creds: dict[str, str]) -> None:
-    """Display credential guidance without printing full secrets to logs."""
-    def _mask(value: str) -> str:
-        if not value or value.startswith("["):
-            return value
-        if len(value) <= 8:
-            return "*" * len(value)
-        return f"{value[:4]}...{value[-4:]}"
-
-    banner = "=" * 70
-    logger.info(banner)
-    logger.info("  USGS MCP HTTP AUTHENTICATION CREDENTIALS")
-    logger.info(banner)
-    logger.info("  API Key:    %s", _mask(creds.get("api_key", "")))
-    if not creds.get("api_key", "").startswith("["):
-        logger.info("  Header:     X-API-Key: <key>")
-    logger.info("  Bearer:     %s", _mask(creds.get("bearer_token", "")))
-    if not creds.get("bearer_token", "").startswith("["):
-        logger.info("  Header:     Authorization: Bearer <token>")
-    logger.info(banner)
-
-
 def _configure_transport_security(args) -> None:
     """Configure transport security settings for HTTP transports.
 
     Note: The MCP SDK's host validation supports:
     - Exact match: "example.com" matches only "example.com"
     - Wildcard port: "localhost:*" matches "localhost:8000", "localhost:3000", etc.
-
-    It does NOT support subdomain wildcards like "*.example.com".
-    For ngrok, you must use the exact hostname (e.g., "abc123.ngrok-free.app").
     """
     from mcp.server.transport_security import TransportSecuritySettings
 
@@ -720,39 +636,8 @@ def _configure_transport_security(args) -> None:
         "http://[::1]:*",
     ]
 
-    # Add custom allowed hosts if specified
     allowed_hosts = list(default_hosts)
     allowed_origins = list(default_origins)
-
-    if args.allowed_hosts:
-        for host in args.allowed_hosts:
-            host = host.strip()
-            if host:
-                # Warn about unsupported wildcard patterns
-                if host.startswith("*."):
-                    logger.warning(
-                        f"Subdomain wildcards like '{host}' are NOT supported by MCP SDK. "
-                        f"Use the exact hostname instead (e.g., 'abc123.ngrok-free.app')"
-                    )
-                    # Still add it in case future SDK versions support it
-
-                # Add host pattern (with wildcard port if not specified)
-                if ":" not in host:
-                    allowed_hosts.append(f"{host}:*")
-                    allowed_hosts.append(host)
-                else:
-                    allowed_hosts.append(host)
-
-                # Add corresponding origin patterns
-                # Strip any wildcard port suffix for origin base
-                host_base = host.rstrip(":*").rstrip("*").rstrip(":")
-                allowed_origins.append(f"http://{host_base}")
-                allowed_origins.append(f"http://{host_base}:*")
-                allowed_origins.append(f"https://{host_base}")
-                allowed_origins.append(f"https://{host_base}:*")
-
-        logger.info(f"Added allowed hosts: {args.allowed_hosts}")
-        logger.info(f"Allowed hosts list: {allowed_hosts}")
 
     # Configure transport security
     if args.disable_dns_rebinding_protection:

@@ -75,6 +75,7 @@ config:
     MCP_TRANSPORT: streamable-http
     MCP_HOST: 0.0.0.0
     MCP_PORT: "8000"
+    MCP_DISABLE_DNS_REBINDING_PROTECTION: "true"
     FASTMCP_STATELESS_HTTP: "true"
     USGS_MCP_RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
     USGS_MCP_RATE_LIMIT_REQUESTS_PER_HOUR: "1000"
@@ -88,13 +89,6 @@ config:
     USGS_MCP_VERIFY_SSL: "true"
     USGS_MCP_AUDIT_LOGGING_ENABLED: "true"
     USGS_MCP_REDACT_SENSITIVE_FIELDS: "true"
-
-auth:
-  create: false
-  existingSecret: ""
-  secretName: ""
-  apiKey: ""
-  bearerToken: ""
 
 extraEnv: []
 extraEnvFrom: []
