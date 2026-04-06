@@ -121,6 +121,66 @@ Key modules:
 
 ---
 
+## agentevals integration (`examples/`)
+
+The `examples/` directory wires the MCP server to [agentevals](https://aevals.ai) for evaluation.
+
+### How it works
+
+agentevals evaluates **agent behavior from OTel traces** — it does not call the MCP server directly. The flow is:
+
+```
+examples/agent_harness.py
+  → OpenAI Agents SDK (agents package)
+      → calls search_publications via MCPServerStreamableHttp
+          → spans captured by JaegerTracingProcessor
+              → saved as Jaeger JSON in examples/traces/
+                  → agentevals run scores the traces
+```
+
+Additionally, `security/tracing.py` now exports spans via OTLP when `OTEL_EXPORTER_OTLP_ENDPOINT` is set, so MCP server-internal spans (rate limits, validation errors, circuit breaker state) are also visible in agentevals.
+
+### New env vars (OTel / agentevals)
+
+| Variable | Notes |
+|---|---|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | Set to `http://localhost:4318` when `agentevals serve --dev` is running |
+| `OTEL_SERVICE_NAME` | Tag on all server-side spans (default: `usgs-warehouse-mcp`) |
+| `OTEL_SDK_DISABLED` | Set `true` to suppress OTLP export entirely |
+
+When `OTEL_EXPORTER_OTLP_ENDPOINT` is **not set**, `security/tracing.py` behaves exactly as before (audit-log only). Zero OTLP packages are imported at startup.
+
+### Quick eval workflow
+
+```bash
+# Terminal 1 — MCP server
+uv run python main.py --transport streamable-http --host 127.0.0.1 --port 8000
+
+# Terminal 2 — agentevals (optional live UI)
+agentevals serve --dev
+
+# Terminal 3 — run benchmark tasks (requires OPENAI_API_KEY)
+export OPENAI_API_KEY=sk-...
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+uv run python examples/agent_harness.py
+
+# Evaluate offline
+agentevals run examples/traces/*.json \
+  --eval-set examples/eval_set_usgs.json \
+  -m tool_trajectory_avg_score \
+  -m response_match_score
+```
+
+Run a single task: `uv run python examples/agent_harness.py --task 0`
+
+See `examples/README.md` for full documentation, Kubernetes setup, and troubleshooting.
+
+### OTel package note
+
+`opentelemetry-sdk` and `opentelemetry-exporter-otlp-proto-http` are now **runtime dependencies** (not dev-only). They add ~2 MB to the installed footprint. The Dockerfile's production stage still only copies `main.py` and `security/` — the examples directory is excluded from the image.
+
+---
+
 ## No CI
 
 `.github/workflows/` is empty. There are no automated tests, lint, or build checks on push/PR.

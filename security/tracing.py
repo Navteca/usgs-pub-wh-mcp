@@ -7,6 +7,13 @@ Provides OpenTelemetry-compatible tracing with:
 - Async-safe context management via contextvars
 - Integration with audit logging
 - HTTP header propagation for distributed systems
+- OTLP export to agentevals / any OpenTelemetry collector when
+  OTEL_EXPORTER_OTLP_ENDPOINT is set in the environment
+
+Backward compatibility:
+  When OTEL_EXPORTER_OTLP_ENDPOINT is unset or empty the module behaves
+  exactly as before (audit-log-only mode).  No OTLP dependency is imported
+  at module level so the server starts cleanly without the SDK installed.
 """
 
 from __future__ import annotations
@@ -14,6 +21,7 @@ from __future__ import annotations
 import functools
 import json
 import logging
+import os
 import time
 import uuid
 from contextlib import contextmanager
@@ -27,7 +35,10 @@ from .audit import get_audit_logger
 from .config import get_security_config
 
 
+# ---------------------------------------------------------------------------
 # Context vars for async-safe trace context propagation
+# ---------------------------------------------------------------------------
+
 _trace_context_var: ContextVar[Optional["TraceContext"]] = ContextVar(
     "trace_context", default=None
 )
@@ -48,6 +59,100 @@ class SpanStatus(str, Enum):
 TRACE_PARENT_HEADER = "traceparent"
 TRACE_STATE_HEADER = "tracestate"
 BAGGAGE_HEADER = "baggage"
+
+
+# ---------------------------------------------------------------------------
+# OTel SDK bridge (optional — only wired when OTLP endpoint is configured)
+# ---------------------------------------------------------------------------
+
+
+def _build_otel_provider():
+    """
+    Build and return an OpenTelemetry TracerProvider with an OTLP HTTP exporter.
+
+    Returns None (silently) if:
+    - OTEL_EXPORTER_OTLP_ENDPOINT is unset / empty
+    - opentelemetry-sdk or opentelemetry-exporter-otlp-proto-http are not installed
+
+    This keeps the server startable without the OTel packages installed and
+    preserves backward compatibility for deployments that don't use agentevals.
+    """
+    endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()
+    if not endpoint:
+        return None
+
+    # Respect OTEL_SDK_DISABLED standard env var
+    if os.environ.get("OTEL_SDK_DISABLED", "false").lower() in ("true", "1", "yes"):
+        return None
+
+    try:
+        from opentelemetry import trace as otel_trace
+        from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+            OTLPSpanExporter,
+        )
+        from opentelemetry.sdk.resources import Resource
+        from opentelemetry.sdk.trace import TracerProvider
+        from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+        service_name = os.environ.get("OTEL_SERVICE_NAME", "usgs-warehouse-mcp")
+        resource = Resource.create({"service.name": service_name})
+
+        # Normalise endpoint: the OTLP HTTP exporter appends /v1/traces itself
+        # if the URL doesn't already end with that path.
+        traces_endpoint = endpoint.rstrip("/")
+        if not traces_endpoint.endswith("/v1/traces"):
+            traces_endpoint = f"{traces_endpoint}/v1/traces"
+
+        exporter = OTLPSpanExporter(endpoint=traces_endpoint)
+        provider = TracerProvider(resource=resource)
+        provider.add_span_processor(BatchSpanProcessor(exporter))
+
+        # Also register as the global provider so any third-party OTel
+        # instrumentation (e.g. openai-agents, httpx) shares the same trace.
+        otel_trace.set_tracer_provider(provider)
+
+        logger = logging.getLogger("usgs_mcp.tracing")
+        logger.info(
+            "OpenTelemetry OTLP export enabled: endpoint=%s service=%s",
+            endpoint,
+            service_name,
+        )
+        return provider
+
+    except ImportError as exc:
+        logger = logging.getLogger("usgs_mcp.tracing")
+        logger.warning(
+            "OTEL_EXPORTER_OTLP_ENDPOINT is set but opentelemetry packages are "
+            "not available (%s). Falling back to audit-log-only tracing.",
+            exc,
+        )
+        return None
+
+
+# Module-level provider — initialised lazily by TracingManager on first use.
+_otel_provider = None
+_otel_provider_initialised = False  # sentinel so we only call _build_otel_provider once
+
+
+def _get_otel_tracer():
+    """Return an OTel Tracer if a provider was built, else None."""
+    global _otel_provider, _otel_provider_initialised
+    if not _otel_provider_initialised:
+        _otel_provider = _build_otel_provider()
+        _otel_provider_initialised = True
+    if _otel_provider is None:
+        return None
+    try:
+        from opentelemetry import trace as otel_trace
+
+        return otel_trace.get_tracer("usgs_mcp")
+    except ImportError:
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Public data model (unchanged public interface)
+# ---------------------------------------------------------------------------
 
 
 @dataclass
@@ -96,6 +201,9 @@ class TraceSpan:
 
     Tracks duration, status, and attributes. Supports nested spans.
     Integrates with the audit logger for logging span events.
+
+    When OTel OTLP export is enabled the span is also forwarded to the
+    configured collector via the SDK's BatchSpanProcessor.
     """
 
     def __init__(
@@ -123,6 +231,10 @@ class TraceSpan:
         self._error_type: Optional[str] = None
         self._token: Optional[Any] = None
 
+        # OTel SDK span — set in __enter__ when a tracer is available
+        self._otel_span: Optional[Any] = None
+        self._otel_ctx_token: Optional[Any] = None
+
     @property
     def span_id(self) -> str:
         return self._span_id
@@ -147,12 +259,26 @@ class TraceSpan:
     def set_attribute(self, key: str, value: Any) -> None:
         """Add or update a span attribute."""
         self.attributes[key] = value
+        # Mirror onto OTel span if active
+        if self._otel_span is not None:
+            try:
+                self._otel_span.set_attribute(key, value)
+            except Exception:
+                pass
 
     def record_exception(self, exc: BaseException) -> None:
         """Record an exception on the span."""
         self._status = SpanStatus.ERROR
         self._error_type = type(exc).__name__
         self._error_message = str(exc)[:500]
+        if self._otel_span is not None:
+            try:
+                self._otel_span.record_exception(exc)
+                from opentelemetry.trace import StatusCode
+
+                self._otel_span.set_status(StatusCode.ERROR, str(exc)[:500])
+            except Exception:
+                pass
 
     def _to_otel_format(self) -> dict[str, Any]:
         """Export span in OpenTelemetry-compatible structured format."""
@@ -161,7 +287,9 @@ class TraceSpan:
             "trace_id": self.trace_context.trace_id,
             "span_id": self._span_id,
             "parent_span_id": self._parent_span_id,
-            "start_time_unix_nano": int(self._start_time * 1e9) if self._start_time else None,
+            "start_time_unix_nano": int(self._start_time * 1e9)
+            if self._start_time
+            else None,
             "end_time_unix_nano": int(self._end_time * 1e9) if self._end_time else None,
             "duration_ms": self.duration_ms,
             "status": self._status.value,
@@ -178,6 +306,41 @@ class TraceSpan:
         self._start_time = time.monotonic()
         self._token = _current_span_var.set(self)
 
+        # --- OTel SDK integration ---
+        tracer = _get_otel_tracer()
+        if tracer is not None:
+            try:
+                import opentelemetry.context as otel_context
+                from opentelemetry import trace as otel_trace
+
+                # Build a parent context from the current OTel context
+                # (picks up propagated context if present) or from our
+                # internal parent_span's OTel span.
+                ctx = otel_context.get_current()
+
+                otel_span = tracer.start_span(
+                    self.operation_name,
+                    context=ctx,
+                    attributes={
+                        str(k): str(v)
+                        if not isinstance(v, (bool, int, float, str))
+                        else v
+                        for k, v in self.attributes.items()
+                    }
+                    if self.attributes
+                    else None,
+                )
+                # Make this span current in OTel context
+                self._otel_ctx_token = otel_context.attach(
+                    otel_trace.set_span_in_context(otel_span)
+                )
+                self._otel_span = otel_span
+            except Exception as exc:
+                logging.getLogger("usgs_mcp.tracing").debug(
+                    "OTel span start failed: %s", exc
+                )
+
+        # --- Audit log ---
         config = get_security_config()
         if config.audit_logging_enabled:
             audit = get_audit_logger()
@@ -209,6 +372,27 @@ class TraceSpan:
         if self._status == SpanStatus.UNSET and exc_val is None:
             self._status = SpanStatus.OK
 
+        # --- OTel SDK integration: end and detach ---
+        if self._otel_span is not None:
+            try:
+                from opentelemetry.trace import StatusCode
+                import opentelemetry.context as otel_context
+
+                if self._status == SpanStatus.OK:
+                    self._otel_span.set_status(StatusCode.OK)
+                elif self._status == SpanStatus.ERROR:
+                    self._otel_span.set_status(
+                        StatusCode.ERROR, self._error_message or ""
+                    )
+                self._otel_span.end()
+                if self._otel_ctx_token is not None:
+                    otel_context.detach(self._otel_ctx_token)
+            except Exception as exc:
+                logging.getLogger("usgs_mcp.tracing").debug(
+                    "OTel span end failed: %s", exc
+                )
+
+        # --- Audit log ---
         config = get_security_config()
         if config.audit_logging_enabled:
             audit = get_audit_logger()
