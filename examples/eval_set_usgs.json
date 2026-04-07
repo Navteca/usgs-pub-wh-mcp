@@ -1,180 +1,269 @@
 {
-  "id": "usgs-mcp-benchmark-v1",
+  "eval_set_id": "usgs-mcp-benchmark-v1",
   "name": "USGS MCP Server Benchmark",
-  "description": "Golden evaluation set for the USGS Publications Warehouse MCP server. Each item defines the expected tool call trajectory and response characteristics for one of the 10 benchmark tasks defined in main.py. Use with agentevals tool_trajectory_avg_score and response_match_score metrics.",
-  "version": "1.0.0",
-  "items": [
+  "description": "Golden evaluation set for the USGS Publications Warehouse MCP server. Each eval case maps to one of the 10 benchmark tasks in agent_harness.py. The userContent text must match the harness prompt exactly so agentevals can pair traces to eval cases. intermediateData.toolUses defines the expected tool trajectory for tool_trajectory_avg_score.",
+  "eval_cases": [
     {
-      "id": "task_01_earthquakes",
-      "description": "Basic topic search — earthquakes",
-      "input": "Find me recent USGS publications related to earthquakes.",
-      "expected_tool_trajectory": [
+      "evalId": "task_01_earthquakes",
+      "conversation": [
         {
-          "tool": "search_publications",
-          "args_contain": {"query": "earthquake"}
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Find me recent USGS publications related to earthquakes." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "USGS publications about earthquakes." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "earthquake" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
         }
       ],
-      "expected_response_contains": ["publication", "earthquake"],
-      "notes": "Agent must call search_publications at least once with a query containing 'earthquake'. A single call is sufficient."
+      "creationTimestamp": 0.0
     },
     {
-      "id": "task_02_multi_hazard_alaska",
-      "description": "Multi-hazard risk briefing for Alaska (Task 1 recipe)",
-      "input": "What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type.",
-      "expected_tool_trajectory": [
-        {"tool": "search_publications", "args_contain": {"query": "earthquake Alaska"}},
-        {"tool": "search_publications", "args_contain": {"query": "volcano Alaska"}},
-        {"tool": "search_publications", "args_contain": {"query": "flood Alaska"}},
-        {"tool": "search_publications", "args_contain": {"query": "wildfire Alaska"}}
-      ],
-      "expected_min_tool_calls": 4,
-      "expected_response_contains": ["earthquake", "volcano", "Alaska"],
-      "trajectory_match_type": "IN_ORDER",
-      "notes": "Requires at least 4 separate hazard searches each including Alaska. The response should cover multiple hazard types."
-    },
-    {
-      "id": "task_03_pfas_groundwater",
-      "description": "PFAS + groundwater cross-disciplinary synthesizer (Task 2 recipe)",
-      "input": "Synthesize USGS research on PFAS contamination and groundwater. Search for PFAS contamination, groundwater contamination, and PFAS groundwater.",
-      "expected_tool_trajectory": [
-        {"tool": "search_publications", "args_contain": {"query": "PFAS contamination"}},
-        {"tool": "search_publications", "args_contain": {"query": "groundwater contamination"}},
-        {"tool": "search_publications", "args_contain": {"query": "PFAS groundwater"}}
-      ],
-      "expected_min_tool_calls": 3,
-      "expected_response_contains": ["PFAS", "groundwater"],
-      "trajectory_match_type": "ANY_ORDER",
-      "notes": "Requires exactly 3 searches in any order. Response should discuss both PFAS and groundwater themes."
-    },
-    {
-      "id": "task_04_claim_verification",
-      "description": "Multi-step fact verification — candidate search then index_id lookup (Task 3 recipe)",
-      "input": "Find USGS publications about low-frequency earthquakes near the Mendocino slab, then retrieve the most relevant one by its index_id to verify details.",
-      "expected_tool_trajectory": [
+      "evalId": "task_02_multi_hazard_alaska",
+      "conversation": [
         {
-          "tool": "search_publications",
-          "args_contain": {"query": "low-frequency earthquakes Mendocino slab"}
-        },
-        {
-          "tool": "search_publications",
-          "args_contain_key": "index_id"
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type separately: earthquakes, volcanoes, floods, and wildfires." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "Natural hazards in Alaska include earthquakes, volcanoes, floods, and wildfires." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "earthquake Alaska" } },
+              { "name": "search_publications", "args": { "query": "volcano Alaska" } },
+              { "name": "search_publications", "args": { "query": "flood Alaska" } },
+              { "name": "search_publications", "args": { "query": "wildfire Alaska" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
         }
       ],
-      "expected_min_tool_calls": 2,
-      "expected_response_contains": ["Mendocino", "earthquake"],
-      "trajectory_match_type": "IN_ORDER",
-      "notes": "First call searches by keyword; second call must use index_id to retrieve a specific publication. The second call's index_id comes from the first call's results."
+      "creationTimestamp": 0.0
     },
     {
-      "id": "task_05_critical_minerals_trend",
-      "description": "Temporal trend analysis — critical minerals research (Task 4 recipe)",
-      "input": "Analyze the trend in USGS critical minerals research over time. Use pagination to retrieve multiple pages and count publications by year.",
-      "expected_tool_trajectory": [
+      "evalId": "task_03_pfas_groundwater",
+      "conversation": [
         {
-          "tool": "search_publications",
-          "args_contain": {"query": "critical minerals", "page_number": 1}
-        },
-        {
-          "tool": "search_publications",
-          "args_contain": {"query": "critical minerals", "page_number": 2}
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Synthesize USGS research on PFAS contamination and groundwater. Search separately for: PFAS contamination, groundwater contamination, and PFAS groundwater together." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "USGS research on PFAS and groundwater contamination." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "PFAS contamination" } },
+              { "name": "search_publications", "args": { "query": "groundwater contamination" } },
+              { "name": "search_publications", "args": { "query": "PFAS groundwater" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
         }
       ],
-      "expected_min_tool_calls": 2,
-      "expected_response_contains": ["critical minerals", "year"],
-      "trajectory_match_type": "IN_ORDER",
-      "notes": "Requires paginated calls with increasing page_number. Response should reference year counts or trends."
+      "creationTimestamp": 0.0
     },
     {
-      "id": "task_06_title_search",
-      "description": "Title exact-match search — National Water Summary",
-      "input": "Find USGS publications with 'National Water Summary' in the title.",
-      "expected_tool_trajectory": [
+      "evalId": "task_04_claim_verification",
+      "conversation": [
         {
-          "tool": "search_publications",
-          "args_contain": {"title": "National Water Summary"}
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Find USGS publications about low-frequency earthquakes near the Mendocino slab. Then retrieve the most relevant one using its index_id to verify the details." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "USGS publications on Mendocino slab low-frequency earthquakes." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "low-frequency earthquakes Mendocino slab" } },
+              { "name": "search_publications", "args": { "query": "low-frequency earthquakes Mendocino slab" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
         }
       ],
-      "expected_response_contains": ["National Water Summary"],
-      "notes": "Agent must use the title parameter, not the query parameter, for this request."
+      "creationTimestamp": 0.0
     },
     {
-      "id": "task_07_research_gap",
-      "description": "Research gap detection — arsenic groundwater (Task 6 recipe)",
-      "input": "Identify research gaps in USGS arsenic groundwater studies. Search separately for contamination, remediation, and monitoring, then compare the total_count across searches.",
-      "expected_tool_trajectory": [
-        {"tool": "search_publications", "args_contain": {"query": "arsenic groundwater contamination"}},
-        {"tool": "search_publications", "args_contain": {"query": "arsenic remediation groundwater"}},
-        {"tool": "search_publications", "args_contain": {"query": "arsenic groundwater monitoring"}}
-      ],
-      "expected_min_tool_calls": 3,
-      "expected_response_contains": ["arsenic", "groundwater"],
-      "trajectory_match_type": "ANY_ORDER",
-      "notes": "Three searches in any order. Response should identify which area (contamination/remediation/monitoring) has fewer publications."
-    },
-    {
-      "id": "task_08_hawaii_eruption",
-      "description": "Emergency response literature kit — Hawaii volcanic eruption (Task 8 recipe)",
-      "input": "Compile an emergency response literature kit for a Hawaii volcanic eruption. Search for volcano eruption Hawaii and volcanic hazard Hawaii lava publications.",
-      "expected_tool_trajectory": [
-        {"tool": "search_publications", "args_contain": {"query": "volcano eruption Hawaii"}},
-        {"tool": "search_publications", "args_contain": {"query": "volcanic hazard Hawaii lava"}}
-      ],
-      "expected_min_tool_calls": 2,
-      "expected_response_contains": ["Hawaii", "volcano"],
-      "trajectory_match_type": "ANY_ORDER",
-      "notes": "Two Hawaii-focused searches. Response should list publications grouped by type (Document/Index Page links)."
-    },
-    {
-      "id": "task_09_water_quality_data",
-      "description": "Data asset discovery — water quality datasets (Task 9 recipe)",
-      "input": "Find USGS water quality monitoring and assessment publications that include links to datasets. Identify data release and dataset-type assets.",
-      "expected_tool_trajectory": [
-        {"tool": "search_publications", "args_contain": {"query": "water quality monitoring data"}},
-        {"tool": "search_publications", "args_contain": {"query": "water quality assessment"}}
-      ],
-      "expected_min_tool_calls": 2,
-      "expected_response_contains": ["water quality"],
-      "trajectory_match_type": "ANY_ORDER",
-      "notes": "Two water quality searches. Response should identify publications with data release or dataset links."
-    },
-    {
-      "id": "task_10_policy_brief",
-      "description": "Policy impact briefing — water availability (Task 10 recipe)",
-      "input": "Find a USGS water availability assessment publication and produce a one-page policy brief using its abstract and citation metadata.",
-      "expected_tool_trajectory": [
+      "evalId": "task_05_critical_minerals_trend",
+      "conversation": [
         {
-          "tool": "search_publications",
-          "args_contain": {"query": "water availability assessment"}
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Analyze the trend in USGS critical minerals research over time. Use pagination to retrieve multiple pages of results and summarize how the volume of publications has changed." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "Trend analysis of USGS critical minerals publications over time." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "critical minerals", "page_number": 1 } },
+              { "name": "search_publications", "args": { "query": "critical minerals", "page_number": 2 } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
         }
       ],
-      "expected_min_tool_calls": 1,
-      "expected_response_contains": ["water availability", "assessment"],
-      "notes": "At minimum one search. Agent may follow up with an index_id lookup. Response should read as a policy brief with abstract-derived content and citation (title, year, DOI)."
+      "creationTimestamp": 0.0
+    },
+    {
+      "evalId": "task_06_title_search",
+      "conversation": [
+        {
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Find USGS publications with 'National Water Summary' in the title. Use the title search parameter." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "USGS publications with National Water Summary in the title." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "title": "National Water Summary" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "creationTimestamp": 0.0
+    },
+    {
+      "evalId": "task_07_research_gap",
+      "conversation": [
+        {
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Identify research gaps in USGS arsenic groundwater studies. Search separately for: arsenic groundwater contamination, arsenic remediation groundwater, and arsenic groundwater monitoring. Then compare total_count across the three searches." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "Research gaps in USGS arsenic groundwater studies." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "arsenic groundwater contamination" } },
+              { "name": "search_publications", "args": { "query": "arsenic remediation groundwater" } },
+              { "name": "search_publications", "args": { "query": "arsenic groundwater monitoring" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "creationTimestamp": 0.0
+    },
+    {
+      "evalId": "task_08_hawaii_eruption",
+      "conversation": [
+        {
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Compile an emergency response literature kit for a Hawaii volcanic eruption. Search for 'volcano eruption Hawaii' and 'volcanic hazard Hawaii lava'." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "Emergency response literature for Hawaii volcanic eruption." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "volcano eruption Hawaii" } },
+              { "name": "search_publications", "args": { "query": "volcanic hazard Hawaii lava" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "creationTimestamp": 0.0
+    },
+    {
+      "evalId": "task_09_water_quality_data",
+      "conversation": [
+        {
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Find USGS water quality monitoring and assessment publications that include links to datasets. Search for 'water quality monitoring data' and 'water quality assessment'. Identify data release and dataset-type assets." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "USGS water quality publications with dataset links." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "water quality monitoring data" } },
+              { "name": "search_publications", "args": { "query": "water quality assessment" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "creationTimestamp": 0.0
+    },
+    {
+      "evalId": "task_10_policy_brief",
+      "conversation": [
+        {
+          "invocationId": "inv_1",
+          "userContent": {
+            "parts": [{ "text": "Find a USGS water availability assessment publication and produce a one-page policy brief using its abstract and citation metadata." }],
+            "role": "user"
+          },
+          "finalResponse": {
+            "parts": [{ "text": "Policy brief on USGS water availability assessment." }],
+            "role": "model"
+          },
+          "intermediateData": {
+            "toolUses": [
+              { "name": "search_publications", "args": { "query": "water availability assessment" } }
+            ],
+            "toolResponses": [],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "creationTimestamp": 0.0
     }
   ],
-  "evaluators": [
-    {
-      "name": "tool_trajectory_avg_score",
-      "type": "builtin",
-      "description": "Checks that the expected tools were called in the expected order. Uses IN_ORDER or ANY_ORDER matching as specified per item."
-    },
-    {
-      "name": "response_match_score",
-      "type": "builtin",
-      "description": "Checks that the agent's final response contains the expected keywords."
-    }
-  ],
-  "metadata": {
-    "mcp_server": "usgs-warehouse-mcp",
-    "mcp_tool": "search_publications",
-    "upstream_api": "https://pubs.usgs.gov/pubs-services",
-    "created": "2026-04-06",
-    "notes": [
-      "task_02 through task_09 require multiple tool calls. Single-call completions should be flagged as regressions.",
-      "task_04 requires the second call to use index_id — this tests the agent's ability to use results from a prior call.",
-      "task_05 requires page_number to increase across calls — this tests pagination awareness.",
-      "task_06 requires the title parameter — this tests parameter selection.",
-      "All expected_response_contains checks are case-insensitive substring matches."
-    ]
-  }
+  "creation_timestamp": 0.0
 }

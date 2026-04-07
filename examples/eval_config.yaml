@@ -1,0 +1,18 @@
+# agentevals eval config for USGS MCP benchmark
+# Runs tool_trajectory_avg_score (exact args, for strict regression detection)
+# and tool_name_in_order_score (IN_ORDER name-only, more lenient).
+#
+# Usage:
+#   agentevals run examples/traces/*.json \
+#     --eval-set examples/eval_set_usgs.json \
+#     --config examples/eval_config.yaml
+
+evaluators:
+  - name: tool_trajectory_avg_score
+    type: builtin
+    threshold: 0.5
+
+  - name: tool_name_in_order_score
+    type: code
+    path: examples/tool_name_trajectory_evaluator.py
+    threshold: 0.8

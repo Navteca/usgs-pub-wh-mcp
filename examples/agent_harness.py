@@ -6,12 +6,12 @@ This script:
 1. Starts an OpenAI Agents SDK agent connected to the USGS MCP server via
    streamable-http transport.
 2. Runs each benchmark query defined in BENCHMARK_TASKS.
-3. Captures OpenTelemetry spans via a custom processor that bridges the
-   OpenAI Agents SDK's internal tracing into a real OTel TracerProvider.
-4. Saves each run's trace as Jaeger JSON to the traces/ subdirectory so that
-   `agentevals run` can evaluate them offline.
-5. Optionally streams spans live to an OTLP receiver (e.g. `agentevals serve
-   --dev`) when OTEL_EXPORTER_OTLP_ENDPOINT is set.
+3. Captures spans via JaegerTracingProcessor that emits GenAI semantic
+   convention tags (gen_ai.input.messages, gen_ai.output.messages,
+   gen_ai.tool.name, etc.) so agentevals can auto-detect and convert traces.
+4. Saves each run's trace as Jaeger JSON to examples/traces/.
+5. Optionally streams spans live to an OTLP receiver when
+   OTEL_EXPORTER_OTLP_ENDPOINT is set.
 
 Usage
 -----
@@ -19,14 +19,13 @@ Usage
 #   Terminal 1 — MCP server
 #   uv run python main.py --transport streamable-http --host 127.0.0.1 --port 8000
 #
-#   Terminal 2 — agentevals receiver (optional, for live UI)
+#   Terminal 2 — agentevals receiver (optional live UI)
 #   agentevals serve --dev
 #
 #   Terminal 3 — this harness
 #   export OPENAI_API_KEY=sk-...
 #   export MCP_URL=http://127.0.0.1:8000/mcp        # default
 #   export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318  # optional live export
-#   export AGENTEVALS_SESSION_NAME=usgs-benchmark   # groups runs in UI
 #   uv run python examples/agent_harness.py
 
 # Run a single task by index (0-based):
@@ -40,12 +39,11 @@ Usage
 
 Environment variables
 ---------------------
-OPENAI_API_KEY              required — OpenAI API key for the agent
+OPENAI_API_KEY              required
 MCP_URL                     MCP server URL (default: http://127.0.0.1:8000/mcp)
-OTEL_EXPORTER_OTLP_ENDPOINT optional — OTLP HTTP endpoint for live span export
-OTEL_SERVICE_NAME           optional — service name tag (default: usgs-warehouse-mcp)
-AGENTEVALS_SESSION_NAME     optional — session label shown in agentevals UI
-OPENAI_AGENTS_DISABLE_TRACING  set to 1 to disable OpenAI Agents SDK backend tracing
+OTEL_EXPORTER_OTLP_ENDPOINT optional OTLP HTTP endpoint for live span export
+OTEL_SERVICE_NAME           optional service name (default: usgs-warehouse-mcp)
+OPENAI_AGENTS_DISABLE_TRACING  set 1 to suppress OpenAI backend tracing
 """
 
 from __future__ import annotations
@@ -62,7 +60,7 @@ from pathlib import Path
 from typing import Any
 
 # ---------------------------------------------------------------------------
-# Ensure repo root is on sys.path when run as a script
+# Ensure repo root on sys.path when run as a script
 # ---------------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -81,30 +79,22 @@ logging.basicConfig(
 )
 logger = logging.getLogger("usgs_harness")
 
-# ---------------------------------------------------------------------------
-# Disable OpenAI Agents SDK default backend tracing to avoid sending
-# agent traces to OpenAI's Traces dashboard (we handle our own export).
-# Users can override by unsetting OPENAI_AGENTS_DISABLE_TRACING.
-# ---------------------------------------------------------------------------
-os.environ.setdefault("OPENAI_AGENTS_DISABLE_TRACING", "1")
+# NOTE: Do NOT set OPENAI_AGENTS_DISABLE_TRACING — we need SDK tracing active so
+# JaegerTracingProcessor receives span callbacks from AgentSpanData, ResponseSpanData,
+# and FunctionSpanData. Disabling it suppresses all span callbacks.
 
 # ---------------------------------------------------------------------------
-# OTel setup — must happen before importing agents
+# OTel setup (optional — only when OTEL_EXPORTER_OTLP_ENDPOINT is set)
 # ---------------------------------------------------------------------------
 
 _otel_tracer = None
 
 
 def _setup_otel() -> Any:
-    """
-    Build an OTel TracerProvider with an OTLP HTTP exporter when
-    OTEL_EXPORTER_OTLP_ENDPOINT is configured.  Returns the tracer or None.
-    """
     endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()
     if not endpoint:
         logger.info("OTEL_EXPORTER_OTLP_ENDPOINT not set — OTLP export disabled.")
         return None
-
     try:
         from opentelemetry import trace as otel_trace
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
@@ -116,21 +106,17 @@ def _setup_otel() -> Any:
 
         service_name = os.environ.get("OTEL_SERVICE_NAME", "usgs-warehouse-mcp")
         resource = Resource.create({"service.name": service_name})
-
         traces_endpoint = endpoint.rstrip("/")
         if not traces_endpoint.endswith("/v1/traces"):
             traces_endpoint = f"{traces_endpoint}/v1/traces"
-
         exporter = OTLPSpanExporter(endpoint=traces_endpoint)
         provider = TracerProvider(resource=resource)
         provider.add_span_processor(BatchSpanProcessor(exporter))
         otel_trace.set_tracer_provider(provider)
-
         logger.info(
             "OTel OTLP export enabled → %s (service=%s)", endpoint, service_name
         )
         return otel_trace.get_tracer("usgs_harness")
-
     except ImportError as exc:
         logger.warning("opentelemetry packages not available: %s", exc)
         return None
@@ -138,110 +124,105 @@ def _setup_otel() -> Any:
 
 _otel_tracer = _setup_otel()
 
-
 # ---------------------------------------------------------------------------
-# Benchmark task definitions
-# These mirror the 10 workflow recipes documented in main.py's tool docstring.
+# Benchmark tasks — mirrors 10 workflow recipes in main.py docstring
 # ---------------------------------------------------------------------------
 
 BENCHMARK_TASKS = [
     {
         "id": "task_01_earthquakes",
-        "description": "Basic topic search",
+        "description": "Basic topic search — earthquakes",
         "prompt": "Find me recent USGS publications related to earthquakes.",
-        "expected_tools": ["search_publications"],
-        "expected_params_contain": {"query": "earthquake"},
+        "expected_min_tool_calls": 1,
     },
     {
         "id": "task_02_multi_hazard_alaska",
-        "description": "Multi-hazard risk briefing (Task 1 recipe)",
+        "description": "Multi-hazard risk briefing for Alaska",
         "prompt": (
             "What natural hazards should I worry about in Alaska? "
-            "Please search for publications on each major hazard type."
+            "Please search for publications on each major hazard type separately: "
+            "earthquakes, volcanoes, floods, and wildfires."
         ),
-        "expected_tools": ["search_publications"] * 4,
         "expected_min_tool_calls": 4,
     },
     {
         "id": "task_03_pfas_groundwater",
-        "description": "Cross-disciplinary synthesizer (Task 2 recipe)",
+        "description": "PFAS + groundwater cross-disciplinary synthesizer",
         "prompt": (
             "Synthesize USGS research on PFAS contamination and groundwater. "
-            "Search for PFAS contamination, groundwater contamination, and PFAS groundwater."
+            "Search separately for: PFAS contamination, groundwater contamination, "
+            "and PFAS groundwater together."
         ),
-        "expected_tools": ["search_publications"] * 3,
         "expected_min_tool_calls": 3,
     },
     {
         "id": "task_04_claim_verification",
-        "description": "Multi-step fact verification (Task 3 recipe)",
+        "description": "Multi-step fact verification — search then index_id lookup",
         "prompt": (
-            "Find USGS publications about low-frequency earthquakes near the Mendocino slab, "
-            "then retrieve the most relevant one by its index_id to verify details."
+            "Find USGS publications about low-frequency earthquakes near the Mendocino slab. "
+            "Then retrieve the most relevant one using its index_id to verify the details."
         ),
-        "expected_tools": ["search_publications", "search_publications"],
         "expected_min_tool_calls": 2,
     },
     {
         "id": "task_05_critical_minerals_trend",
-        "description": "Temporal trend analysis (Task 4 recipe)",
+        "description": "Temporal trend analysis — critical minerals",
         "prompt": (
             "Analyze the trend in USGS critical minerals research over time. "
-            "Use pagination to retrieve multiple pages and count publications by year."
+            "Use pagination to retrieve multiple pages of results and summarize "
+            "how the volume of publications has changed."
         ),
         "expected_min_tool_calls": 2,
-        "expected_tools": ["search_publications", "search_publications"],
     },
     {
         "id": "task_06_title_search",
         "description": "Title exact-match search",
-        "prompt": "Find USGS publications with 'National Water Summary' in the title.",
-        "expected_tools": ["search_publications"],
-        "expected_params_contain": {"title": "National Water Summary"},
+        "prompt": (
+            "Find USGS publications with 'National Water Summary' in the title. "
+            "Use the title search parameter."
+        ),
+        "expected_min_tool_calls": 1,
     },
     {
         "id": "task_07_research_gap",
-        "description": "Research gap detection (Task 6 recipe)",
+        "description": "Research gap detection — arsenic groundwater",
         "prompt": (
             "Identify research gaps in USGS arsenic groundwater studies. "
-            "Search separately for contamination, remediation, and monitoring, "
-            "then compare the total_count across searches."
+            "Search separately for: arsenic groundwater contamination, "
+            "arsenic remediation groundwater, and arsenic groundwater monitoring. "
+            "Then compare total_count across the three searches."
         ),
         "expected_min_tool_calls": 3,
-        "expected_tools": ["search_publications"] * 3,
     },
     {
         "id": "task_08_hawaii_eruption",
-        "description": "Emergency response literature kit (Task 8 recipe)",
+        "description": "Emergency response literature kit — Hawaii volcanic eruption",
         "prompt": (
             "Compile an emergency response literature kit for a Hawaii volcanic eruption. "
-            "Search for volcano eruption Hawaii and volcanic hazard Hawaii lava publications."
+            "Search for 'volcano eruption Hawaii' and 'volcanic hazard Hawaii lava'."
         ),
         "expected_min_tool_calls": 2,
-        "expected_tools": ["search_publications", "search_publications"],
     },
     {
         "id": "task_09_water_quality_data",
-        "description": "Data asset discovery (Task 9 recipe)",
+        "description": "Data asset discovery — water quality datasets",
         "prompt": (
             "Find USGS water quality monitoring and assessment publications that include "
-            "links to datasets. Identify data release and dataset-type assets."
+            "links to datasets. Search for 'water quality monitoring data' and "
+            "'water quality assessment'. Identify data release and dataset-type assets."
         ),
         "expected_min_tool_calls": 2,
-        "expected_tools": ["search_publications", "search_publications"],
     },
     {
         "id": "task_10_policy_brief",
-        "description": "Policy impact briefing (Task 10 recipe)",
+        "description": "Policy impact briefing — water availability",
         "prompt": (
             "Find a USGS water availability assessment publication and produce a "
             "one-page policy brief using its abstract and citation metadata."
         ),
         "expected_min_tool_calls": 1,
-        "expected_tools": ["search_publications"],
     },
 ]
-
 
 # ---------------------------------------------------------------------------
 # Jaeger JSON trace builder
@@ -250,26 +231,18 @@ BENCHMARK_TASKS = [
 
 class JaegerTraceBuilder:
     """
-    Collects span events from the OpenAI Agents SDK TracingProcessor interface
-    and builds a Jaeger-format JSON trace that agentevals can consume directly.
+    Builds a Jaeger-format JSON trace that agentevals can consume.
 
-    Jaeger JSON schema (simplified):
-    {
-      "data": [
-        {
-          "traceID": "...",
-          "spans": [ { spanID, operationName, startTime, duration, tags, ... } ],
-          "processes": { "p1": { "serviceName": "...", "tags": [] } }
-        }
-      ]
-    }
+    agentevals auto-detects GenAI format when spans have:
+      - gen_ai.input.messages + gen_ai.output.messages  → is_llm_span = True
+      - gen_ai.tool.name                                 → is_tool_span = True
+      - operation_name contains "agent"                 → is_invocation_span = True
     """
 
     def __init__(self, trace_id: str, service_name: str = "usgs-warehouse-mcp") -> None:
         self.trace_id = trace_id
         self.service_name = service_name
         self.spans: list[dict] = []
-        self._span_map: dict[str, dict] = {}
 
     def add_span(
         self,
@@ -279,9 +252,7 @@ class JaegerTraceBuilder:
         duration_us: int,
         parent_span_id: str | None = None,
         tags: list[dict] | None = None,
-        logs: list[dict] | None = None,
     ) -> None:
-        """Add a span to the trace."""
         references = []
         if parent_span_id:
             references.append(
@@ -291,24 +262,22 @@ class JaegerTraceBuilder:
                     "spanID": parent_span_id,
                 }
             )
-
-        span = {
-            "traceID": self.trace_id,
-            "spanID": span_id,
-            "operationName": operation_name,
-            "references": references,
-            "startTime": start_time_us,
-            "duration": duration_us,
-            "tags": tags or [],
-            "logs": logs or [],
-            "processID": "p1",
-            "warnings": None,
-        }
-        self.spans.append(span)
-        self._span_map[span_id] = span
+        self.spans.append(
+            {
+                "traceID": self.trace_id,
+                "spanID": span_id,
+                "operationName": operation_name,
+                "references": references,
+                "startTime": start_time_us,
+                "duration": max(duration_us, 1),
+                "tags": tags or [],
+                "logs": [],
+                "processID": "p1",
+                "warnings": None,
+            }
+        )
 
     def to_jaeger_json(self) -> dict:
-        """Export as Jaeger JSON compatible with agentevals."""
         return {
             "data": [
                 {
@@ -333,12 +302,11 @@ class JaegerTraceBuilder:
 
 
 # ---------------------------------------------------------------------------
-# OpenAI Agents SDK TracingProcessor bridge
+# Helpers
 # ---------------------------------------------------------------------------
 
 
 def _make_tag(key: str, value: Any) -> dict:
-    """Build a Jaeger tag dict from a key-value pair."""
     if isinstance(value, bool):
         return {"key": key, "type": "bool", "value": value}
     if isinstance(value, int):
@@ -348,83 +316,9 @@ def _make_tag(key: str, value: Any) -> dict:
     return {"key": key, "type": "string", "value": str(value)}
 
 
-class JaegerTracingProcessor:
-    """
-    Implements the OpenAI Agents SDK TracingProcessor interface and converts
-    SDK trace/span objects into Jaeger JSON spans.
-
-    The SDK calls:
-      on_trace_start(trace)
-      on_trace_end(trace)
-      on_span_start(span)
-      on_span_end(span)
-    """
-
-    def __init__(self, builder: JaegerTraceBuilder) -> None:
-        self._builder = builder
-        self._root_span_id: str | None = None
-
-    def on_trace_start(self, trace: Any) -> None:  # noqa: ANN401
-        pass
-
-    def on_trace_end(self, trace: Any) -> None:  # noqa: ANN401
-        pass
-
-    def on_span_start(self, span: Any) -> None:  # noqa: ANN401
-        pass
-
-    def on_span_end(self, span: Any) -> None:  # noqa: ANN401
-        """Convert a finished SDK span to Jaeger format."""
-        try:
-            span_id = getattr(span, "span_id", None) or str(uuid.uuid4().hex[:16])
-            parent_id = getattr(span, "parent_id", None)
-            started_at = getattr(span, "started_at", None)
-            ended_at = getattr(span, "ended_at", None)
-
-            # Convert ISO timestamps to microseconds
-            start_us = _iso_to_us(started_at) if started_at else int(time.time() * 1e6)
-            end_us = _iso_to_us(ended_at) if ended_at else start_us + 1
-            duration_us = max(end_us - start_us, 0)
-
-            # Extract operation name from span_data
-            span_data = getattr(span, "span_data", None)
-            operation_name = _extract_operation_name(span, span_data)
-
-            # Build tags from span_data attributes
-            tags = _extract_tags(span, span_data)
-
-            self._builder.add_span(
-                span_id=span_id,
-                operation_name=operation_name,
-                start_time_us=start_us,
-                duration_us=duration_us,
-                parent_span_id=parent_id,
-                tags=tags,
-            )
-
-            # Also emit to OTel if tracer is available
-            if _otel_tracer is not None:
-                _emit_otel_span(
-                    operation_name=operation_name,
-                    start_us=start_us,
-                    duration_us=duration_us,
-                    tags=tags,
-                    trace_id=self._builder.trace_id,
-                    span_id=span_id,
-                    parent_id=parent_id,
-                )
-
-        except Exception as exc:  # noqa: BLE001
-            logger.debug("Failed to convert SDK span: %s", exc)
-
-    def shutdown(self) -> None:
-        pass
-
-
 def _iso_to_us(ts: Any) -> int:
-    """Convert an ISO-8601 timestamp string or datetime to microseconds."""
     try:
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         if hasattr(ts, "timestamp"):
             return int(ts.timestamp() * 1e6)
@@ -434,126 +328,288 @@ def _iso_to_us(ts: Any) -> int:
         return int(time.time() * 1e6)
 
 
-def _extract_operation_name(span: Any, span_data: Any) -> str:
-    """Derive a human-readable operation name from an SDK span."""
-    if span_data is None:
-        return getattr(span, "name", "unknown")
+# ---------------------------------------------------------------------------
+# SDK TracingProcessor — converts SDK spans to Jaeger + GenAI tags
+# ---------------------------------------------------------------------------
 
-    cls_name = type(span_data).__name__
-    # e.g. FunctionSpanData, AgentSpanData, GenerationSpanData, HandoffSpanData, etc.
-    mapping = {
-        "FunctionSpanData": lambda d: f"tool_call {getattr(d, 'name', 'unknown')}",
-        "AgentSpanData": lambda d: f"agent {getattr(d, 'name', 'unknown')}",
-        "GenerationSpanData": lambda _: "llm_generation",
-        "HandoffSpanData": lambda d: f"handoff {getattr(d, 'to_agent', 'unknown')}",
-        "GuardrailSpanData": lambda d: f"guardrail {getattr(d, 'name', '')}",
-        "TranscriptionSpanData": lambda _: "transcription",
-        "SpeechSpanData": lambda _: "speech",
-        "CustomSpanData": lambda d: getattr(d, "name", "custom"),
-    }
-    factory = mapping.get(cls_name)
-    if factory:
+
+class JaegerTracingProcessor:
+    """
+    Implements OpenAI Agents SDK TracingProcessor interface.
+
+    Emits spans with GenAI semantic convention tags so agentevals
+    auto-detects the trace format as "genai":
+
+    is_llm_span   = span has gen_ai.request.model OR gen_ai.input.messages
+    is_tool_span  = span has gen_ai.tool.name
+    is_invocation = operation_name contains "agent"
+
+    The SDK emits an AgentSpanData span as the trace root (parent_id=None).
+    ResponseSpanData and FunctionSpanData spans are children of it.
+    We pass SDK span_id/parent_id through directly so agentevals can build
+    the correct parent-child tree.
+    """
+
+    def __init__(self, builder: JaegerTraceBuilder) -> None:
+        self._builder = builder
+
+    def on_trace_start(self, trace: Any) -> None:
+        pass
+
+    def on_trace_end(self, trace: Any) -> None:
+        pass
+
+    def on_span_start(self, span: Any) -> None:
+        pass
+
+    def on_span_end(self, span: Any) -> None:
         try:
-            return factory(span_data)
-        except Exception:
-            pass
-    return cls_name.replace("SpanData", "").lower() or "span"
+            self._process_span(span)
+        except Exception as exc:
+            logger.debug("Failed to convert SDK span: %s", exc)
 
+    def _process_span(self, span: Any) -> None:
+        span_id = getattr(span, "span_id", None) or uuid.uuid4().hex[:16]
+        # Use SDK parent_id directly. If None, span becomes a trace root.
+        # Do NOT override with synthetic invocation_span_id — the AgentSpanData
+        # span IS the root and must have parent_span_id=None so agentevals
+        # recognises it as root_span and traverses its children correctly.
+        parent_id = getattr(span, "parent_id", None)
+        started_at = getattr(span, "started_at", None)
+        ended_at = getattr(span, "ended_at", None)
 
-def _extract_tags(span: Any, span_data: Any) -> list[dict]:
-    """Build Jaeger tags from an SDK span and its span_data."""
-    tags: list[dict] = []
+        start_us = _iso_to_us(started_at) if started_at else int(time.time() * 1e6)
+        end_us = _iso_to_us(ended_at) if ended_at else start_us + 1000
+        duration_us = max(end_us - start_us, 1)
 
-    # Standard tags
-    tags.append(_make_tag("otel.scope.name", "openai-agents-sdk"))
-    tags.append(_make_tag("span.kind", "internal"))
+        span_data = getattr(span, "span_data", None)
+        operation_name, tags = self._build_span_info(span, span_data)
 
-    if span_data is None:
-        return tags
+        self._builder.add_span(
+            span_id=span_id,
+            operation_name=operation_name,
+            start_time_us=start_us,
+            duration_us=duration_us,
+            parent_span_id=parent_id,
+            tags=tags,
+        )
 
-    cls_name = type(span_data).__name__
+    def _build_span_info(self, span: Any, span_data: Any) -> tuple[str, list[dict]]:
+        """Return (operation_name, tags) with correct GenAI semantic convention tags."""
+        tags: list[dict] = [
+            _make_tag("otel.scope.name", "openai-agents-sdk"),
+            _make_tag("span.kind", "internal"),
+        ]
 
-    if cls_name == "FunctionSpanData":
-        name = getattr(span_data, "name", None)
-        inp = getattr(span_data, "input", None)
-        out = getattr(span_data, "output", None)
-        if name:
-            tags.append(_make_tag("gen_ai.tool.name", name))
-        if inp is not None:
-            tags.append(
-                _make_tag("gen_ai.tool.call.args", json.dumps(inp, default=str)[:2000])
-            )
-        if out is not None:
-            tags.append(_make_tag("gen_ai.tool.response", str(out)[:2000]))
-        tags.append(_make_tag("gen_ai.operation.name", "execute_tool"))
+        if span_data is None:
+            return getattr(span, "name", "unknown"), tags
 
-    elif cls_name == "AgentSpanData":
-        name = getattr(span_data, "name", None)
-        if name:
+        cls = type(span_data).__name__
+
+        # ------------------------------------------------------------------
+        # AgentSpanData  →  invocation span (op name contains "agent")
+        # ------------------------------------------------------------------
+        if cls == "AgentSpanData":
+            name = getattr(span_data, "name", "agent")
+            tags.append(_make_tag("gen_ai.operation.name", "invoke_agent"))
             tags.append(_make_tag("gen_ai.agent.name", name))
+            tools = getattr(span_data, "tools", None)
+            if tools:
+                tags.append(_make_tag("gen_ai.agent.tools", json.dumps(tools)))
+            return f"agent {name}", tags
 
-    elif cls_name == "GenerationSpanData":
-        model = getattr(span_data, "model", None)
-        inp = getattr(span_data, "input", None)
-        out = getattr(span_data, "output", None)
-        usage = getattr(span_data, "usage", None)
-        if model:
-            tags.append(_make_tag("gen_ai.request.model", model))
-        if inp is not None:
-            tags.append(_make_tag("gen_ai.prompt", json.dumps(inp, default=str)[:2000]))
-        if out is not None:
+        # ------------------------------------------------------------------
+        # GenerationSpanData  →  LLM span (older SDK versions)
+        # ResponseSpanData    →  LLM span (openai-agents >=0.13)
+        # Needs gen_ai.input.messages + gen_ai.output.messages for agentevals
+        # ------------------------------------------------------------------
+        if cls in ("GenerationSpanData", "ResponseSpanData"):
+            if cls == "GenerationSpanData":
+                model = getattr(span_data, "model", None)
+                inp = getattr(span_data, "input", None)  # list[Mapping] | None
+                out = getattr(span_data, "output", None)  # list[Mapping] | None
+                usage = getattr(span_data, "usage", None)
+
+                tags.append(_make_tag("gen_ai.operation.name", "chat"))
+                if model:
+                    tags.append(_make_tag("gen_ai.request.model", model))
+
+                input_msgs = inp if inp is not None else []
+                output_msgs = out if out is not None else []
+                tags.append(
+                    _make_tag(
+                        "gen_ai.input.messages", json.dumps(input_msgs, default=str)
+                    )
+                )
+                tags.append(
+                    _make_tag(
+                        "gen_ai.output.messages", json.dumps(output_msgs, default=str)
+                    )
+                )
+                if usage:
+                    in_tok = (
+                        usage.get("input_tokens")
+                        if isinstance(usage, dict)
+                        else getattr(usage, "input_tokens", None)
+                    )
+                    out_tok = (
+                        usage.get("output_tokens")
+                        if isinstance(usage, dict)
+                        else getattr(usage, "output_tokens", None)
+                    )
+                    if in_tok is not None:
+                        tags.append(_make_tag("gen_ai.usage.input_tokens", int(in_tok)))
+                    if out_tok is not None:
+                        tags.append(
+                            _make_tag("gen_ai.usage.output_tokens", int(out_tok))
+                        )
+                return "llm_generation", tags
+
+            # ResponseSpanData — openai-agents >= 0.13
+            response = getattr(span_data, "response", None)
+            inp = getattr(span_data, "input", None)  # list of message dicts
+
+            model = getattr(response, "model", None) if response else None
+            tags.append(_make_tag("gen_ai.operation.name", "chat"))
+            if model:
+                tags.append(_make_tag("gen_ai.request.model", model))
+
+            # Build input messages list for agentevals
+            input_msgs = inp if isinstance(inp, list) else []
             tags.append(
-                _make_tag("gen_ai.completion", json.dumps(out, default=str)[:2000])
+                _make_tag("gen_ai.input.messages", json.dumps(input_msgs, default=str))
             )
-        if usage:
-            in_tok = getattr(usage, "input_tokens", None)
-            out_tok = getattr(usage, "output_tokens", None)
-            if in_tok is not None:
-                tags.append(_make_tag("gen_ai.usage.input_tokens", in_tok))
-            if out_tok is not None:
-                tags.append(_make_tag("gen_ai.usage.output_tokens", out_tok))
 
-    return tags
+            # Build output messages from response.output items
+            output_msgs: list[dict] = []
+            output_tool_calls: list[dict] = []
+            if response:
+                output = getattr(response, "output", None) or []
+                for item in output:
+                    item_type = type(item).__name__
+                    if item_type == "ResponseFunctionToolCall":
+                        # Tool call emitted by the LLM
+                        try:
+                            args = json.loads(getattr(item, "arguments", "{}"))
+                        except Exception:
+                            args = {}
+                        output_tool_calls.append(
+                            {
+                                "name": getattr(item, "name", ""),
+                                "arguments": args,
+                                "id": getattr(item, "call_id", None)
+                                or getattr(item, "id", None),
+                            }
+                        )
+                    elif item_type == "ResponseOutputMessage":
+                        content_parts = getattr(item, "content", [])
+                        text = ""
+                        for part in content_parts:
+                            t = getattr(part, "text", None)
+                            if t:
+                                text += t
+                        if output_tool_calls:
+                            output_msgs.append(
+                                {
+                                    "role": "assistant",
+                                    "content": text,
+                                    "tool_calls": output_tool_calls,
+                                }
+                            )
+                            output_tool_calls = []
+                        elif text:
+                            output_msgs.append({"role": "assistant", "content": text})
 
+                usage = getattr(response, "usage", None)
+                if usage:
+                    in_tok = getattr(usage, "input_tokens", None)
+                    out_tok = getattr(usage, "output_tokens", None)
+                    if in_tok is not None:
+                        tags.append(_make_tag("gen_ai.usage.input_tokens", int(in_tok)))
+                    if out_tok is not None:
+                        tags.append(
+                            _make_tag("gen_ai.usage.output_tokens", int(out_tok))
+                        )
 
-def _emit_otel_span(
-    operation_name: str,
-    start_us: int,
-    duration_us: int,
-    tags: list[dict],
-    trace_id: str,
-    span_id: str,
-    parent_id: str | None,
-) -> None:
-    """Forward a converted span to the OTel TracerProvider."""
-    if _otel_tracer is None:
-        return
-    try:
-        from opentelemetry.trace import SpanKind, StatusCode
-        from opentelemetry.trace.span import format_span_id, format_trace_id
+            tags.append(
+                _make_tag(
+                    "gen_ai.output.messages", json.dumps(output_msgs, default=str)
+                )
+            )
+            return "llm_generation", tags
 
-        attrs = {
-            t["key"]: t["value"]
-            for t in tags
-            if isinstance(t["value"], (str, int, float, bool))
-        }
+        # ------------------------------------------------------------------
+        # FunctionSpanData  →  tool span
+        # Needs gen_ai.tool.name for agentevals is_tool_span detection
+        # ------------------------------------------------------------------
+        if cls == "FunctionSpanData":
+            name = getattr(span_data, "name", "unknown_tool")
+            inp = getattr(span_data, "input", None)
+            out = getattr(span_data, "output", None)
+            mcp = getattr(span_data, "mcp_data", None)
 
-        with _otel_tracer.start_as_current_span(
-            operation_name,
-            kind=SpanKind.INTERNAL,
-            attributes=attrs,
-        ) as otel_span:
-            # Set timestamps cannot be done portably without low-level SDK access;
-            # the span will have the real wall-clock time from when start_as_current_span
-            # is called. For agentevals purposes the span structure matters more than
-            # microsecond-accurate timestamps.
-            pass
-    except Exception as exc:
-        logger.debug("OTel span emission failed: %s", exc)
+            tags.append(_make_tag("gen_ai.operation.name", "execute_tool"))
+            tags.append(_make_tag("gen_ai.tool.name", name))
+
+            # Serialise input as tool call arguments
+            if inp is not None:
+                try:
+                    parsed = json.loads(inp) if isinstance(inp, str) else inp
+                    tags.append(
+                        _make_tag(
+                            "gen_ai.tool.call.arguments",
+                            json.dumps(parsed, default=str),
+                        )
+                    )
+                except Exception:
+                    tags.append(
+                        _make_tag("gen_ai.tool.call.arguments", str(inp)[:2000])
+                    )
+
+            # Serialise output as tool call result
+            if out is not None:
+                result_str = str(out)[:4000]
+                tags.append(_make_tag("gen_ai.tool.call.result", result_str))
+
+            if mcp:
+                tags.append(_make_tag("gen_ai.tool.type", "MCPTool"))
+                server = mcp.get("server_name", "") if isinstance(mcp, dict) else ""
+                if server:
+                    tags.append(_make_tag("gen_ai.tool.mcp_server", server))
+
+            return f"execute_tool {name}", tags
+
+        # ------------------------------------------------------------------
+        # HandoffSpanData
+        # ------------------------------------------------------------------
+        if cls == "HandoffSpanData":
+            to_agent = getattr(span_data, "to_agent", "unknown")
+            tags.append(_make_tag("gen_ai.operation.name", "handoff"))
+            tags.append(_make_tag("gen_ai.handoff.target", to_agent))
+            return f"handoff {to_agent}", tags
+
+        # ------------------------------------------------------------------
+        # GuardrailSpanData
+        # ------------------------------------------------------------------
+        if cls == "GuardrailSpanData":
+            name = getattr(span_data, "name", "guardrail")
+            triggered = getattr(span_data, "triggered", False)
+            tags.append(_make_tag("gen_ai.guardrail.name", name))
+            tags.append(_make_tag("gen_ai.guardrail.triggered", bool(triggered)))
+            return f"guardrail {name}", tags
+
+        # ------------------------------------------------------------------
+        # CustomSpanData / fallback
+        # ------------------------------------------------------------------
+        name = getattr(span_data, "name", None) or cls.replace("SpanData", "").lower()
+        return name, tags
+
+    def shutdown(self) -> None:
+        pass
 
 
 # ---------------------------------------------------------------------------
-# Main harness
+# Main task runner
 # ---------------------------------------------------------------------------
 
 
@@ -562,27 +618,27 @@ async def run_task(
     mcp_url: str,
     traces_dir: Path,
 ) -> dict:
-    """Run a single benchmark task and save its trace to traces_dir."""
+    """Run one benchmark task, save Jaeger JSON trace, return result dict."""
     try:
         from agents import Agent, Runner
         from agents.mcp import MCPServerStreamableHttp
         from agents.tracing import add_trace_processor
     except ImportError as exc:
-        logger.error("openai-agents SDK not installed. Install with: uv sync\n%s", exc)
+        logger.error("openai-agents not installed. Run: uv sync\n%s", exc)
         sys.exit(1)
 
     task_id = task["id"]
-    trace_id = uuid.uuid4().hex  # 32-char hex — Jaeger format
+    trace_id = uuid.uuid4().hex  # 32-char hex
+    task_start_us = int(time.time() * 1e6)
+
     builder = JaegerTraceBuilder(trace_id=trace_id)
     processor = JaegerTracingProcessor(builder=builder)
-
-    # Register our processor alongside any existing ones
     add_trace_processor(processor)
 
     logger.info("[%s] Starting: %s", task_id, task["description"])
-    logger.info("[%s] Prompt: %s", task_id, task["prompt"])
+    logger.info("[%s] Prompt: %s", task_id, task["prompt"][:120])
 
-    result_payload = {
+    result_payload: dict = {
         "task_id": task_id,
         "trace_id": trace_id,
         "description": task["description"],
@@ -597,10 +653,7 @@ async def run_task(
     try:
         async with MCPServerStreamableHttp(
             name="USGS Publications MCP",
-            params={
-                "url": mcp_url,
-                "timeout": 60,
-            },
+            params={"url": mcp_url, "timeout": 60},
             cache_tools_list=True,
         ) as server:
             agent = Agent(
@@ -608,31 +661,29 @@ async def run_task(
                 instructions=(
                     "You are a research assistant that searches USGS scientific publications. "
                     "Use the search_publications tool to find relevant publications. "
-                    "Always search with meaningful keywords, paginate when needed, "
+                    "Search with meaningful keywords, paginate when needed, "
                     "and deduplicate by index_id when merging results."
                 ),
                 mcp_servers=[server],
             )
 
-            run_result = await Runner.run(
-                agent,
-                task["prompt"],
-            )
+            run_result = await Runner.run(agent, task["prompt"])
 
             final_output = run_result.final_output
             result_payload["final_output"] = str(final_output)[:5000]
             result_payload["success"] = True
 
-            # Extract tool calls from the run result items
+            # Extract tool calls from new_items
             tool_calls = []
             for item in run_result.new_items:
                 item_type = type(item).__name__
                 if "ToolCall" in item_type or "FunctionCall" in item_type:
+                    raw = getattr(item, "raw_item", None)
                     tool_name = getattr(item, "name", None) or getattr(
-                        getattr(item, "raw_item", None), "name", None
+                        raw, "name", None
                     )
                     tool_args = getattr(item, "arguments", None) or getattr(
-                        getattr(item, "raw_item", None), "arguments", None
+                        raw, "arguments", None
                     )
                     if tool_name:
                         tool_calls.append(
@@ -644,7 +695,7 @@ async def run_task(
 
             result_payload["tool_calls"] = tool_calls
             logger.info(
-                "[%s] Done. Tool calls: %d, Output length: %d chars",
+                "[%s] Done. tool_calls=%d output_len=%d",
                 task_id,
                 len(tool_calls),
                 len(str(final_output)),
@@ -655,22 +706,27 @@ async def run_task(
         logger.error("[%s] Failed: %s", task_id, exc, exc_info=True)
 
     finally:
-        # Remove the processor so it doesn't accumulate across tasks
-        try:
-            from agents.tracing import set_trace_processors
-            # set_trace_processors([]) would clear all — instead we leave
-            # the default empty since we set OPENAI_AGENTS_DISABLE_TRACING=1
-        except Exception:
-            pass
+        task_end_us = int(time.time() * 1e6)
 
-        # Save trace file regardless of success/failure
+        # The SDK AgentSpanData span IS the root invocation span — it was already
+        # captured by JaegerTracingProcessor.on_span_end with operation_name
+        # "agent USGS Research Agent" and parent_span_id=None.
+        # Do NOT add a duplicate synthetic root span here.
+
         trace_data = builder.to_jaeger_json()
         trace_file = traces_dir / f"{task_id}_{trace_id[:8]}.json"
         trace_file.write_text(json.dumps(trace_data, indent=2))
         result_payload["trace_file"] = str(trace_file)
-        logger.info("[%s] Trace saved → %s", task_id, trace_file)
+        logger.info(
+            "[%s] Trace saved → %s (%d spans)", task_id, trace_file, len(builder.spans)
+        )
 
     return result_payload
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
 
 
 async def main() -> None:
@@ -697,7 +753,7 @@ async def main() -> None:
         "--concurrency",
         type=int,
         default=1,
-        help="Number of tasks to run concurrently (default: 1). Rate-limited servers may need 1.",
+        help="Number of concurrent tasks (default: 1).",
     )
     args = parser.parse_args()
 
@@ -713,47 +769,38 @@ async def main() -> None:
             sys.exit(1)
         tasks_to_run = [BENCHMARK_TASKS[args.task]]
 
-    logger.info(
-        "Running %d benchmark task(s) against %s", len(tasks_to_run), args.mcp_url
-    )
-    logger.info("Traces will be saved to: %s", traces_dir)
+    logger.info("Running %d task(s) against %s", len(tasks_to_run), args.mcp_url)
+    logger.info("Traces → %s", traces_dir)
 
     semaphore = asyncio.Semaphore(args.concurrency)
 
-    async def run_with_semaphore(task: dict) -> dict:
+    async def _run(task: dict) -> dict:
         async with semaphore:
             return await run_task(task, mcp_url=args.mcp_url, traces_dir=traces_dir)
 
-    results = await asyncio.gather(
-        *[run_with_semaphore(t) for t in tasks_to_run],
-        return_exceptions=False,
-    )
+    results = await asyncio.gather(*[_run(t) for t in tasks_to_run])
 
-    # Summary
     passed = sum(1 for r in results if r["success"])
     failed = len(results) - passed
     logger.info("")
     logger.info("=" * 60)
-    logger.info("HARNESS SUMMARY: %d passed, %d failed", passed, failed)
+    logger.info("SUMMARY: %d passed, %d failed", passed, failed)
     logger.info("=" * 60)
-
     for r in results:
         status = "PASS" if r["success"] else "FAIL"
-        tool_count = len(r.get("tool_calls", []))
         logger.info(
             "[%s] %s  tools=%d  trace=%s",
             status,
             r["task_id"],
-            tool_count,
+            len(r.get("tool_calls", [])),
             r.get("trace_file", "N/A"),
         )
         if r.get("error"):
             logger.info("       error: %s", r["error"])
 
-    # Print eval command
     trace_files = " ".join(str(r["trace_file"]) for r in results if r.get("trace_file"))
     logger.info("")
-    logger.info("To evaluate with agentevals:")
+    logger.info("Evaluate with:")
     logger.info(
         "  agentevals run %s \\\n"
         "    --eval-set examples/eval_set_usgs.json \\\n"
@@ -762,10 +809,9 @@ async def main() -> None:
         trace_files,
     )
 
-    # Save summary JSON
     summary_file = traces_dir / "harness_summary.json"
     summary_file.write_text(json.dumps(results, indent=2, default=str))
-    logger.info("Full summary saved → %s", summary_file)
+    logger.info("Summary → %s", summary_file)
 
 
 if __name__ == "__main__":
