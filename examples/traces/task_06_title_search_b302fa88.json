@@ -1,0 +1,284 @@
+{
+  "data": [
+    {
+      "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+      "spans": [
+        {
+          "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+          "spanID": "span_f8fb3335a02244f283663818",
+          "operationName": "mcplisttools",
+          "references": [],
+          "startTime": 1775564771152071,
+          "duration": 7304,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+          "spanID": "span_75e260a52fc7472684c160de",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+              "spanID": "span_0834975a02e044fb9c5567c7"
+            }
+          ],
+          "startTime": 1775564771159809,
+          "duration": 1374806,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS publications with 'National Water Summary' in the title. Use the title search parameter.\", \"role\": \"user\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1684
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 37
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+          "spanID": "span_296c767ff818465e808d2537",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+              "spanID": "span_0834975a02e044fb9c5567c7"
+            }
+          ],
+          "startTime": 1775564772535166,
+          "duration": 990214,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": null, \"title\": \"National Water Summary\", \"index_id\": null, \"page_size\": 20, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "{'type': 'text', 'text': '{\\n  \"total_count\": 12,\\n  \"page_size\": \"20\",\\n  \"page_number\": \"1\",\\n  \"publications\": [\\n    {\\n      \"index_id\": \"wsp2425\",\\n      \"title\": \"National water summary on wetland resources\",\\n      \"abstract\": \"This National Water Summary on Wetland Resources documents wetland resources in the United States. It presents an overview of the status of knowledge of wetlands at the present time-what they are, where they are found, why they are important, and the controversies surrounding them, with an emphasis on their hydrology. Wetland resources in each State, the District of Columbia (combined with Maryland), Puerto Rico, the U.S. Virgin Islands, and the western Pacific Islands are described.\",\\n      \"year\": \"1996\",\\n      \"authors\": [],\\n      \"author_count\": 0,\\n      \"type\": \"Report\",\\n      \"subtype\": \"USGS Numbered Series\",\\n      \"series\": \"Water Supply Paper\",\\n      \"series_number\": \"2425\",\\n      \"doi\": \"10.3133/wsp2425\",\\n      \"links\": [\\n        {\\n          \"type\": \"Thumbnail\",\\n          \"url\": \"https://pubs.usgs.gov/wsp/2425/report-thumb.jpg\"\\n        },\\n        {\\n          \"type\": \"Document\",\\n          \"url\": \"https://pubs.usgs.gov/wsp/2425/report.pdf\",\\n          \"file_format\": \"pdf\"\\n        },\\n        {\\n          \"type\": \"NGMDB Index Page\",\\n          \"url\": \"https://ngmdb.usgs.gov/Prodesc/proddesc_25395.htm\",\\n          \"file_format\": \"html\"\\n        }\\n      ]\\n    },\\n    {\\n      \"index_id\": \"ofr96169\",\\n      \"title\": \"Supplemental reference list for the National Water Summary on Wetland Resources\",\\n      \"abstract\": null,\\n      \"year\": \"1996\",\\n      \"authors\": [\\n        \"K. Fry\"\\n      ],\\n      \"author_count\": 1,\\n      \"type\": \"Report\",\\n      \"subtype\": \"USGS Numbered Series\",\\n      \"series\": \"Open-File Report\",\\n      \"series_number\": \"96-169\",\\n      \"doi\": \"10.3133/ofr96169\",\\n      \"links\": [\\n        {\\n          \"type\": \"Thumbnail\",\\n          \"url\": \"https://pubs.usgs.gov/of/1996/0169/report-thumb.jpg\"\\n        },\\n        {\\n          \"type\": \"Document\",\\n          \"url\": \"https://pubs.usgs.gov/of/1996/0169/report.pdf\",\\n          \"file_format\": \"pdf\"\\n        }\\n      ]\\n    },\\n    {\\n      \"index_id\": \"wsp2400\",\\n      \"title\": \"National water summary 1990-91: Hydrologic events and stream water quality\",\\n      \"abstract\": \"National Water Summary 1990-91 Hydrologic Events and Stream Water Quality was planned to complement existing Federal-State water-quality reporting to the U.S. Congress that is required by the Clean Water Act of 1972. This act, formally known as the Federal Water Pollution Control Act Amendments of 1972 (Public Law 92-500), and its amendments in 1977,1979,1980,1981,1983, and 1987, is the principal basis for Federal-State cooperation on maintaining and reporting on water quality in the United States. Under section 305(b) of the Clean Water Act, the States must designate uses for waterbodies, biennially assess whether the waterbodies meet designated uses, and report to the U.S. Environmental Protection Agency (EPA), which in turn summarizes the findings of the State assessments in a biennial National Water Quality Inventory report to the Congress. This volume of the National Water Summary uses a nationally consistent data base and methods of statistical analysis to document stream water quality in the United States, Puerto Rico, and the Western Pacific Islands. As a basis for preparation of this report, the U.S. Geological Survey (uses) created a data base of waterquality data from about 2,900 stream water-quality monitoring stations in the United States (Lanfear, 1993). These data, which were extracted primarily from the uses National Water Information System (NWIS) and supplemented with data from the EPA national data base known as STORET, consisted mostly of water-chemistry and physical-sediment data. About 1,400 of these stations met a criterion, used in this volume for trends analysis of data, of having a period of record that began "
+            },
+            {
+              "key": "gen_ai.tool.type",
+              "type": "string",
+              "value": "MCPTool"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+          "spanID": "span_c0d0157206624bc4a7523534",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+              "spanID": "span_0834975a02e044fb9c5567c7"
+            }
+          ],
+          "startTime": 1775564773526990,
+          "duration": 14,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+          "spanID": "span_49814296b1d64465ab034ad8",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+              "spanID": "span_0834975a02e044fb9c5567c7"
+            }
+          ],
+          "startTime": 1775564773527407,
+          "duration": 17376428,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS publications with 'National Water Summary' in the title. Use the title search parameter.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":null,\\\"title\\\":\\\"National Water Summary\\\",\\\"index_id\\\":null,\\\"page_size\\\":20,\\\"page_number\\\":1}\", \"call_id\": \"call_z4zsqAFZSsBzAJF9jU0ME1N0\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0e4e17a05ea119130069d4f7e411648196b680141db9dcb428\", \"status\": \"completed\"}, {\"call_id\": \"call_z4zsqAFZSsBzAJF9jU0ME1N0\", \"output\": [{\"type\": \"input_text\", \"text\": \"{\\n  \\\"total_count\\\": 12,\\n  \\\"page_size\\\": \\\"20\\\",\\n  \\\"page_number\\\": \\\"1\\\",\\n  \\\"publications\\\": [\\n    {\\n      \\\"index_id\\\": \\\"wsp2425\\\",\\n      \\\"title\\\": \\\"National water summary on wetland resources\\\",\\n      \\\"abstract\\\": \\\"This National Water Summary on Wetland Resources documents wetland resources in the United States. It presents an overview of the status of knowledge of wetlands at the present time-what they are, where they are found, why they are important, and the controversies surrounding them, with an emphasis on their hydrology. Wetland resources in each State, the District of Columbia (combined with Maryland), Puerto Rico, the U.S. Virgin Islands, and the western Pacific Islands are described.\\\",\\n      \\\"year\\\": \\\"1996\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2425\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2425\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2425/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2425/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25395.htm\\\",\\n          \\\"file_format\\\": \\\"html\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"ofr96169\\\",\\n      \\\"title\\\": \\\"Supplemental reference list for the National Water Summary on Wetland Resources\\\",\\n      \\\"abstract\\\": null,\\n      \\\"year\\\": \\\"1996\\\",\\n      \\\"authors\\\": [\\n        \\\"K. Fry\\\"\\n      ],\\n      \\\"author_count\\\": 1,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Open-File Report\\\",\\n      \\\"series_number\\\": \\\"96-169\\\",\\n      \\\"doi\\\": \\\"10.3133/ofr96169\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1996/0169/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1996/0169/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2400\\\",\\n      \\\"title\\\": \\\"National water summary 1990-91: Hydrologic events and stream water quality\\\",\\n      \\\"abstract\\\": \\\"National Water Summary 1990-91 Hydrologic Events and Stream Water Quality was planned to complement existing Federal-State water-quality reporting to the U.S. Congress that is required by the Clean Water Act of 1972. This act, formally known as the Federal Water Pollution Control Act Amendments of 1972 (Public Law 92-500), and its amendments in 1977,1979,1980,1981,1983, and 1987, is the principal basis for Federal-State cooperation on maintaining and reporting on water quality in the United States. Under section 305(b) of the Clean Water Act, the States must designate uses for waterbodies, biennially assess whether the waterbodies meet designated uses, and report to the U.S. Environmental Protection Agency (EPA), which in turn summarizes the findings of the State assessments in a biennial National Water Quality Inventory report to the Congress. This volume of the National Water Summary uses a nationally consistent data base and methods of statistical analysis to document stream water quality in the United States, Puerto Rico, and the Western Pacific Islands. As a basis for preparation of this report, the U.S. Geological Survey (uses) created a data base of waterquality data from about 2,900 stream water-quality monitoring stations in the United States (Lanfear, 1993). These data, which were extracted primarily from the uses National Water Information System (NWIS) and supplemented with data from the EPA national data base known as STORET, consisted mostly of water-chemistry and physical-sediment data. About 1,400 of these stations met a criterion, used in this volume for trends analysis of data, of having a period of record that began before water year 1980. (A water year is the period from October 1 through September 30 and is identified by the calendar year at the end of the period.) Inasmuch as the determination of trends requires about 10 years of data, few biological data were suitable for trends analysis because biological indicators of water quality were not being collected extensively by water year 1980. Also, because of the lack of long-term data, an assessment of the water quality of lakes and reservoirs is not included in this National Water Summary. Constituent and waterproperty data were selected from this data base and analyzed with statistical techniques that have been used extensively by the uses to summarize conditions and trends in water quality. (Throughout the remainder of this article, the term \\\\\\\"constituent\\\\\\\" is used also to represent water properties, such as pH and alkalinity.) Selected results from this analysis are presented graphically, both by State and nationally, in this volume. The data base created for preparation of this volume and the resulting nationally consistent statistical analysis of these data provide a unique opportunity to compare and contrast stream water-quality conditions and trends nationally and State by State. Because of the complexity of water quality and the natural seasonal and diurnal variations in the concentrations of waterquality constituents, the determination of trends in water quality requires a relatively long period of record. Trends in constituent concentrations in the State summaries in this volume were calculated for one or more of four periods water years 1970-89,1975-89,1980- 89, and 1982-89. Unfortunately, few water-quality monitoring stations have periods of record of more than 10 or 15 years, and therefore most analyses in the State summaries were done for 8- or 10-year periods. Although interest in water quality has continued to heighten since passage of the Clean Water Act, funds for support of data-collection programs are limited and data records of many of the constituents now of current concern, especially organic constituents, do not exist or are less than 10-years long; consequently only a modest number of organic constituents are presented in this volume. Discussion of conditions and trends in water quality in this National Water Summary also draw upon information about land use, population, water use, application of agricultural chemicals in rural areas, the siting of industrial facilities, and other ancillary information. Because the results of analysis of a restricted number of constituents are presented in this volume, State 305(b) reports also are cited in the discussion of water quality in each State. The following discussion is an overview of the three parts of this 1990-91 National Water Summary - \\\\\\\"Hydrologic Conditions and Water-Related Events, Water Years 1990-91,\\\\\\\" \\\\\\\"Hydrologic Perspectives on Water Issues,\\\\\\\" and \\\\\\\"State Summaries of Stream Water Quality.\\\\\\\"\\\",\\n      \\\"year\\\": \\\"1993\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2400\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2400\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25394.htm\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2400/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2400/report-thumb.jpg\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"ofr9329\\\",\\n      \\\"title\\\": \\\"Hydrologic data-collection stations whose stream water quality data were available to prepare the 1990-91 National Water Summary on Stream Water Quality\\\",\\n      \\\"abstract\\\": null,\\n      \\\"year\\\": \\\"1993\\\",\\n      \\\"authors\\\": [\\n        \\\"K.J. Lanfear\\\"\\n      ],\\n      \\\"author_count\\\": 1,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Open-File Report\\\",\\n      \\\"series_number\\\": \\\"93-29\\\",\\n      \\\"doi\\\": \\\"10.3133/ofr9329\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1993/0029/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1993/0029/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2375\\\",\\n      \\\"title\\\": \\\"National water summary 1988\\u201389 \\u2014 Hydrologic events and floods and droughts\\\",\\n      \\\"abstract\\\": \\\"National Water Summary 1988-89 - Hydrologic Events and Floods and Droughts documents the occurrence in the United States, Puerto Rico, and the U.S. Virgin Islands of two types of extreme hydrologic events floods and droughts on the basis of analysis of stream-discharge data. This report details, for the first time, the areal extent of the most notable floods and droughts in each State, portrays their severity in terms of annual peak discharge for floods and annual departure from long-term discharge for droughts for selected stream-gaging stations, and estimates how frequently floods and droughts of such severity can be expected to recur. These two types of extreme hydrologic events are very different in their duration, cause, areal extent, and effect on human activities. Floods are short-term phenomena that typically last only a few hours to a few days and are associated with weather systems that produce unusually large amounts of rain or that cause snow to melt quickly. The large amount of runoff produced causes rivers to overflow their banks and, thus, is highly dangerous to human life and property. In contrast, droughts are long-term phenomena that typically persist for months to a decade or more and are associated with the absence of precipitation producing weather. They affect large geographic areas that can be statewide, regional, or even nationwide in extent. Droughts can cause great economic hardship and even loss of life in developing countries, although the loss of life results almost wholly from diminished water supplies and catastrophic crop failures rather than from the direct and obvious peril to human life that is common to floods. The following discussion is an overview of the three parts of this 1988-89 National Water Summary \\\\\\\"Hydrologic Conditions and Water-Related Events, Water Years 1988-89,\\\\\\\" \\\\\\\"Hydrologic Perspectives on Water Issues,\\\\\\\" and \\\\\\\"State Summaries of Floods and Droughts.\\\\\\\" Background information on sources of atmospheric moisture to the States from a study sponsored by the U.S. Geological Survey to enable related information to be presented in each of the State summaries also is given.\\\",\\n      \\\"year\\\": \\\"1991\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2375\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2375\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25393.htm\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Index Page\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/publication/wsp2375\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2375/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2375/report-thumb.jpg\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2350\\\",\\n      \\\"title\\\": \\\"National water summary 1987: Hydrologic events and water supply and use\\\",\\n      \\\"abstract\\\": \\\"Water use in the United States, as measured by freshwater withdrawals in 1985, averaged 338,000 Mgal/d (million gallons per day), which is enough water to cover the 48 conterminous States to a depth of about 2.4 inches. Only 92,300 Mgal/d, or 27.3 percent of the water withdrawn, was consumptive use and thus lost to immediate further use; the remainder of the withdrawals (72.7 percent) was return flow available for reuse a number of times as the water flowed to the sea. The 1985 freshwater withdrawals were much less than the average 30 inches of precipitation that falls on the conterminous States each year; consumptive use accounted for only 7 percent of the estimated annual runoff of 1,230,000 Mgal/d. Nonetheless, as the State summaries on water supply and use clearly show, water is not always available when and where it is needed. Balancing water demands with available water supplies constitutes one of the major resource allocation issues that will face the United States in the coming decade.Of the 1985 freshwater withdrawals, 78.3 percent (265,000 Mgal/d) came from surface-water sources (streams and lakes), and 21.7 percent (73,300 Mgal/d) came from ground water. Surface water provided drinking water for about 47 percent of the Nation's total population. It was the source of 59.9 percent of the Nation's public-supply systems. For self-supplied withdrawals, surface water accounted for 1.6 percent of the domestic and commercial uses; 64.0 percent of the industrial and mining use; 99.4 percent of the thermoelectric generation withdrawals, mainly for cooling water; and 65.6 percent of the agricultural withdrawals. Eight States accounted for 43 percent of the surface-water use; California, Colorado, and Idaho used surface water primarily for irrigation, and Dlinois, Michigan, Ohio, Pennsylvania, and Texas used surface-water primarily for cooling condensers or reactors in thermoelectric plants.Ground water provided drinking water for 53 percent of the Nation's total population and nearly all the rural population. It was the source of 40.1 percent of the public-supply systems withdrawals. For self-supplied withdrawals, ground water accounted for 11.3 percent of the domestic and commercial use, 17.3 percent of the industrial and mining withdrawals, less than 1 percent of the thermoelectric generation withdrawals, and 34.4 percent of the agricultural withdrawals (irrigation and livestock). Eight States Arizona, Arkansas, California, Florida, Idaho, Kansas, Nebraska, and Texas accounted for 66 percent of the ground water used. In each of those States, as in many other States, irrigation was the major use of ground water. Each offstream-use category described in the State summaries public supply, domestic and commercial, industrial and mining, thermoelectric power, and agriculture (irrigation and livestock) followed its own geographic pattern as described below.Consumptive use of water effectively removes the water from immediate further use downstream of the withdrawal point. Of the total amount of consumptive water use in 1985, agricultural use accounted for about 82.5 percent. More than one-half (53 percent) of irrigation water is consumptively used by evapotranspiration or is incorporated into the crop. This is a good indication of the effect that irrigated agriculture can have in a river basin where irrigation is a major activity. The availability of return flows for reuse depends largely on where the water reenters the system. If the return flows are discharged to a stream, they usually can be reused; if they are discharged to a saltwater estuary, they are effectively lost to further use because of water-quality degradation just as if the water had been consumptively used. Similarly, water that recharges a highly transmissive aquifer can be available for reuse either through pumpage from a well or as discharge to a local stream. Thus, much of the water withdrawn for different uses can and does become available for further use although the quality might degrade with each additional use.The allocation and the management of water resources are the responsibilities of the individual States and water institutions within the States. These institutions are evolving in response to the challenges of water management problems. As the individual State summaries indicate, recent State legislation deals with facilitating water transfers within the States as a means of reducing imbalances between water supplies and use, with emphasizing water conservation in times of drought and at places where groundwater depletion is a problem of long standing, and with reducing threats to public health and the environment from water pollution.Most of the State summaries indicate the expectation that water use will continue to increase in the future and that water contamination will continue to be a major water concern. Both issues will require increasingly intensive water management in the future. Whether the water resources under management are considered to be fully appropriated or over appropriated, as in some Western States, or whether the resource could support additional development, as is the situation in most States, improved water-use information will play a key role in future water management efforts.\\\",\\n      \\\"year\\\": \\\"1990\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2350\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2350\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25392.htm\\\",\\n          \\\"file_format\\\": \\\"html\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2350/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2350/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"ofr90359\\\",\\n      \\\"title\\\": \\\"Methodology to derive water-quality trends for use by the National Water Summary Program of the U.S. Geological Survey\\\",\\n      \\\"abstract\\\": null,\\n      \\\"year\\\": \\\"1990\\\",\\n      \\\"authors\\\": [\\n        \\\"K.J. Lanfear\\\",\\n        \\\"R. Alexander\\\"\\n      ],\\n      \\\"author_count\\\": 2,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Open-File Report\\\",\\n      \\\"series_number\\\": \\\"90-359\\\",\\n      \\\"doi\\\": \\\"10.3133/ofr90359\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1990/0359/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1990/0359/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2325\\\",\\n      \\\"title\\\": \\\"National water summary 1986: Hydrologic events and ground-water quality\\\",\\n      \\\"abstract\\\": \\\"Ground water is one of the most important natural resources of the United States and degradation of its quality could have a major effect on the welfare of the Nation. Currently (1985), ground water is the source of drinking water for 53 percent of the Nation's population and for more than 97 percent of its rural population. It is the source of about 40 percent of the Nation's public water supply, 33 percent of water for irrigation, and 17 percent of freshwater for selfsupplied industries.Ground water also is the source of about 40 percent of the average annual streamflow in the United States, although during long periods of little or no precipitation, ground-water discharges provide nearly all of the base streamflow. This hydraulic connection between aquifers and streams implies that if a persistent pollutant gets into an aquifer, it eventually could discharge into a stream.Information presented in the 1986 National Water Summary clearly shows that the United States has very large amounts of potable ground water available for use. Although naturally occurring constituents, such as nitrate, and human-induced substances, such as synthetic organic chemicals, frequently are detected in ground water, their concentrations usually do not exceed existing Federal or State standards or guidelines for maximum concentrations in drinking water.Troublesome contamination of ground water falls into two basic categories related to the source or sources of the contamination. Locally, high concentrations of a variety of toxic metals, organic chemicals, and petroleum products have been detected in ground water associated with point sources such as wastedisposal sites, storage-tank leaks, and hazardous chemical spills. These types of local problems commonly occur in densely populated urban areas and industrialized areas. Larger, multicounty areas also have been identified where contamination frequently is found in shallow wells. These areas generally are associated with broad-scale, or nonpoint, sources of contamination such as agricultural activities or highdensity domestic waste disposal (septic systems) in urban centers. At present, only a very small percentage of the total volume of potable ground water in the United States is contaminated from both point and nonpoint sources; however, available data, especially data about the occurrence of synthetic organic and toxic substances, generally are inadequate to determine the full extent of ground-water contamination in the Nation's aquifers or to define trends in groundwater quality. Most information about the occurrence of these substances has come from the study of individual sites or areas where contamination had already been detected or suspected.Management and protection of ground water present a major challenge to the Nation. Current and projected costs of detection and cleanup of existing ground-water contamination are staggering and, even so, complete removal of pollutants from ground water in the vicinity of some waste sites might not be technically feasible. At all levels of government, the task of protecting the resource for its most beneficial uses is difficult and controversial.Despite increasing awareness that some of the Nation's ground water is contaminated with a variety of toxic metals, synthetic organic chemicals, radionuclides, pesticides, and other contaminants that might present a long-term risk to human health, public policy towards ground-water protection is still in the formative stages. Despite increasing efforts devoted to ground-water protection by State and Federal regulatory and resource-management agencies, the extent of ground-water contamination is likely to appear to increase over the next few years because more agencies will be searching for evidence of contamination, and they will be using increasingly sensitive analytical procedures. Increased technology and expanded monitoring activities probably will detect the effects of past contamination and land uses on water quality. The significant time lag between a waterquality change in one part of an aquifer system and the effects of that change at a downgradient site, such as a well, results from the generally slow movement of ground water. This lag between cause and observed effect needs to be considered in evaluating the effectiveness of current and future ground-water policies and remedial measures.Conclusive answers to questions about the location, extent, and severity of ground-water contamination, and about trends in ground-water quality, must await further collection and analysis of data from the Nation's aquifers. Generalizations, however, can be made, and the 1986 National Water Summary, which describes the natural quality of ground-water resources in each State and the major contamination problems that have been identified as of 1986, provides a national perspective of the ground-water-quality situation.The 1986 National Water Summary follows the format of previous volumes. It contains three parts, and the contents of each of these parts are highlighted below.\\\",\\n      \\\"year\\\": \\\"1988\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2325\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2325\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25391.htm\\\",\\n          \\\"file_format\\\": \\\"html\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2325/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2325/report-thumb.jpg\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"ofr88713\\\",\\n      \\\"title\\\": \\\"National Water Summary Program\\\",\\n      \\\"abstract\\\": null,\\n      \\\"year\\\": \\\"1988\\\",\\n      \\\"authors\\\": [\\n        \\\"Edith Chase\\\"\\n      ],\\n      \\\"author_count\\\": 1,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Open-File Report\\\",\\n      \\\"series_number\\\": \\\"88-713\\\",\\n      \\\"doi\\\": \\\"10.3133/ofr88713\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1988/0713/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/of/1988/0713/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2300\\\",\\n      \\\"title\\\": \\\"National water summary 1985: Hydrologic events and surface-water resources\\\",\\n      \\\"abstract\\\": \\\"The surface-water resources of the United States, the focal point for this National Water Summary, are extensively developed and managed to provide water supplies, hydroelectric power, navigation, recreational opportunities, and sufficient instream flows to maintain fish and wildlife habitats and adequate water quality. Surface water represents 77 percent of the Nation's total freshwater withdrawals, 65 percent of public supplies, 74 percent of self- supplied industries, excluding thermoelectric power generation, and 60 percent of irrigation. In only 10 States does surface water provide less than half of the total withdrawals.\\\",\\n      \\\"year\\\": \\\"1986\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2300\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2300\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25390.htm\\\",\\n          \\\"file_format\\\": \\\"html\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2300/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2300/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2275\\\",\\n      \\\"title\\\": \\\"National water summary 1984: Hydrologic events, selected water-quality trends, and ground-water resources\\\",\\n      \\\"abstract\\\": \\\"Water year 1984 was a year of extreme hydrologic conditions. For the third consecutive year, precipitation and resulting runoff were well above long-term averages in most of the Nation and as much as 400 percent above average in the Southwest. National flood damages during the year were the third highest in a 10-year period (1975-84) an estimated $3.5 to $4 billion. In many of the larger river systems, monthly stream discharges were above normal, as they have been for the last 2 water years, and, with the exception of a few reservoir systems, end-of-month reservoir storage also remained above normal. The Great Salt Lake reached its highest level since 1873 as a result of these conditions. During a 9.6-foot rise from September 1982 to July 1984, the area of the lake expanded by 600 square miles (an increase of 35 percent), resulting in an estimated $212 million in damages to recreational facilities and industrial installations built on the exposed lake bed during former lower levels. Other lake levels in closed basins of the Western United States also have risen over the past few years, thereby flooding communities, recreational facilities, and agricultural lands. In contrast to this predominant pattern of wet conditions, several areas of the country, mainly west Texas and Hawaii, have experienced persistent droughts. Most recently, very dry conditions existed in parts of northern Montana. These hydrologic conditions and 100 specific events are reviewed in the \\\\\\\"Hydrologic Conditions and Water-Related Events, Water Year 1984\\\\\\\" part of the 1984 National Water Summary.\\\",\\n      \\\"year\\\": \\\"1985\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2275\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2275\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"NGMDB Index Page\\\",\\n          \\\"url\\\": \\\"https://ngmdb.usgs.gov/Prodesc/proddesc_25396.htm\\\",\\n          \\\"file_format\\\": \\\"html\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2275/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2275/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"index_id\\\": \\\"wsp2250\\\",\\n      \\\"title\\\": \\\"National water summary 1983: Hydrologic events and issues\\\",\\n      \\\"abstract\\\": \\\"The United States as a Nation possesses abundant water resources and has developed and used those resources extensively. The national renewable supply of water is about 1,400 billion gallons per day (for the conterminous 48 States). Approximately 380 billion gallons per day of freshwater is withdrawn for use by the Nation's homes, farms, and industries, and about 280 billion gallons per day is returned to streams. Although a large percentage of the Nation's waste is carried in this return flow, the quality of water in streams has improved in many respects as a result of the pollution-control pro- grams of recent years. However, much remains to be learned about water quality particularly the extent of contamination by synthetic organic chemicals and heavy metals, and the effects of these contaminants on human health.\\\",\\n      \\\"year\\\": \\\"1984\\\",\\n      \\\"authors\\\": [],\\n      \\\"author_count\\\": 0,\\n      \\\"type\\\": \\\"Report\\\",\\n      \\\"subtype\\\": \\\"USGS Numbered Series\\\",\\n      \\\"series\\\": \\\"Water Supply Paper\\\",\\n      \\\"series_number\\\": \\\"2250\\\",\\n      \\\"doi\\\": \\\"10.3133/wsp2250\\\",\\n      \\\"links\\\": [\\n        {\\n          \\\"type\\\": \\\"Thumbnail\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2250/report-thumb.jpg\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"Document\\\",\\n          \\\"url\\\": \\\"https://pubs.usgs.gov/wsp/2250/report.pdf\\\",\\n          \\\"file_format\\\": \\\"pdf\\\"\\n        }\\n      ]\\n    }\\n  ]\\n}\"}], \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 8448
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 1223
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"Here are USGS publications with 'National Water Summary' in the title:\\n\\n1. **National water summary on wetland resources** (Water Supply Paper 2425, 1996)\\n   - Overview of wetland resources in the U.S., including status, distribution, value, and controversies with emphasis on hydrology.\\n   - [PDF](https://pubs.usgs.gov/wsp/2425/report.pdf)\\n   - [DOI: 10.3133/wsp2425](https://doi.org/10.3133/wsp2425)\\n\\n2. **Supplemental reference list for the National Water Summary on Wetland Resources** (Open-File Report 96-169, 1996)\\n   - Compiled by K. Fry.\\n   - [PDF](https://pubs.usgs.gov/of/1996/0169/report.pdf)\\n   - [DOI: 10.3133/ofr96169](https://doi.org/10.3133/ofr96169)\\n\\n3. **National water summary 1990-91: Hydrologic events and stream water quality** (Water Supply Paper 2400, 1993)\\n   - Hydrologic events and water quality trends, based on national databases, with state-by-state summaries.\\n   - [PDF](https://pubs.usgs.gov/wsp/2400/report.pdf)\\n   - [DOI: 10.3133/wsp2400](https://doi.org/10.3133/wsp2400)\\n\\n4. **Hydrologic data-collection stations whose stream water quality data were available to prepare the 1990-91 National Water Summary on Stream Water Quality** (Open-File Report 93-29, 1993)\\n   - By K.J. Lanfear.\\n   - [PDF](https://pubs.usgs.gov/of/1993/0029/report.pdf)\\n   - [DOI: 10.3133/ofr9329](https://doi.org/10.3133/ofr9329)\\n\\n5. **National water summary 1988\\u201389 \\u2014 Hydrologic events and floods and droughts** (Water Supply Paper 2375, 1991)\\n   - Documentation and analysis of major floods and droughts in the U.S. for 1988\\u201389.\\n   - [PDF](https://pubs.usgs.gov/wsp/2375/report.pdf)\\n   - [DOI: 10.3133/wsp2375](https://doi.org/10.3133/wsp2375)\\n\\n6. **National water summary 1987: Hydrologic events and water supply and use** (Water Supply Paper 2350, 1990)\\n   - Water supply/use trends and events in the U.S. for 1987.\\n   - [PDF](https://pubs.usgs.gov/wsp/2350/report.pdf)\\n   - [DOI: 10.3133/wsp2350](https://doi.org/10.3133/wsp2350)\\n\\n7. **Methodology to derive water-quality trends for use by the National Water Summary Program of the U.S. Geological Survey** (Open-File Report 90-359, 1990)\\n   - By K.J. Lanfear & R. Alexander.\\n   - [PDF](https://pubs.usgs.gov/of/1990/0359/report.pdf)\\n   - [DOI: 10.3133/ofr90359](https://doi.org/10.3133/ofr90359)\\n\\n8. **National water summary 1986: Hydrologic events and ground-water quality** (Water Supply Paper 2325, 1988)\\n   - Focuses on groundwater resources, quality, and contamination in the U.S.\\n   - [PDF](https://pubs.usgs.gov/wsp/2325/report.pdf)\\n   - [DOI: 10.3133/wsp2325](https://doi.org/10.3133/wsp2325)\\n\\n9. **National Water Summary Program** (Open-File Report 88-713, 1988)\\n   - By Edith Chase.\\n   - [PDF](https://pubs.usgs.gov/of/1988/0713/report.pdf)\\n   - [DOI: 10.3133/ofr88713](https://doi.org/10.3133/ofr88713)\\n\\n10. **National water summary 1985: Hydrologic events and surface-water resources** (Water Supply Paper 2300, 1986)\\n    - Surface water resources trends, events, and issues in the U.S.\\n    - [PDF](https://pubs.usgs.gov/wsp/2300/report.pdf)\\n    - [DOI: 10.3133/wsp2300](https://doi.org/10.3133/wsp2300)\\n\\n11. **National water summary 1984: Hydrologic events, selected water-quality trends, and ground-water resources** (Water Supply Paper 2275, 1985)\\n    - Extreme hydrologic conditions and trends in 1984.\\n    - [PDF](https://pubs.usgs.gov/wsp/2275/report.pdf)\\n    - [DOI: 10.3133/wsp2275](https://doi.org/10.3133/wsp2275)\\n\\n12. **National water summary 1983: Hydrologic events and issues** (Water Supply Paper 2250, 1984)\\n    - National water supply, use, water quality, and policy issues of 1983.\\n    - [PDF](https://pubs.usgs.gov/wsp/2250/report.pdf)\\n    - [DOI: 10.3133/wsp2250](https://doi.org/10.3133/wsp2250)\\n\\nLet me know if you need details or abstracts for specific volumes!\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "b302fa88f6cf4a6589a65d0c96fcf7d8",
+          "spanID": "span_0834975a02e044fb9c5567c7",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564771159493,
+          "duration": 19745273,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "gen_ai.agent.tools",
+              "type": "string",
+              "value": "[\"search_publications\"]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "1d832850961e4d40846f6b804e6fdfbc",
+      "spans": [
+        {
+          "traceID": "1d832850961e4d40846f6b804e6fdfbc",
+          "spanID": "5748780bc4cb469c",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564245647948,
+          "duration": 5122062,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"I'm having trouble accessing the USGS publications database at the moment. Would you like a summary of typical recent earthquake research topics from the USGS based on my training data, or do you want to try searching again in a few moments? Let me know how you'd like to proceed.\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find me recent USGS publications related to earthquakes.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

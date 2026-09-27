@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "d24557fa42494d8abde55ddacab2abcc",
+      "spans": [
+        {
+          "traceID": "d24557fa42494d8abde55ddacab2abcc",
+          "spanID": "3be974a4094040d4",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564278703404,
+          "duration": 4531023,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"I'm still encountering a technical problem when trying to access the USGS publications database, which prevents me from searching for arsenic-related groundwater studies at the moment. This may be a temporary system issue. \\n\\nWould you like me to try again in a few minutes, or provide general guidance on how to evaluate research gaps in arsenic groundwater contamination, remediation, and monitoring based on typical approaches?\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Identify research gaps in USGS arsenic groundwater studies. Search separately for: arsenic groundwater contamination, arsenic remediation groundwater, and arsenic groundwater monitoring. Then compare total_count across the three searches.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

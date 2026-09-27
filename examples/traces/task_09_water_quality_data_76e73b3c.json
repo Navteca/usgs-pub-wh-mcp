@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "76e73b3ca7784cfa841025c1b43c23b2",
+      "spans": [
+        {
+          "traceID": "76e73b3ca7784cfa841025c1b43c23b2",
+          "spanID": "c166ad76621844b4",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564288570959,
+          "duration": 6242108,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"There is a temporary technical issue with retrieving USGS publication data right now, so I am unable to fetch the latest water quality monitoring and assessment publications with dataset links at this moment.\\n\\nIf you would like, I can notify you when the service is working again, or try a different approach (such as summarizing the types of USGS water data releases and where to look for datasets in general). Let me know how you would like to proceed!\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find USGS water quality monitoring and assessment publications that include links to datasets. Search for 'water quality monitoring data' and 'water quality assessment'. Identify data release and dataset-type assets.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

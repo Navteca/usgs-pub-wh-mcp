@@ -1,0 +1,710 @@
+{
+  "data": [
+    {
+      "traceID": "5babc38737564486b28badc7fe350205",
+      "spans": [
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_bf80b00cfdcf451e9219624c",
+          "operationName": "mcplisttools",
+          "references": [],
+          "startTime": 1775564740538526,
+          "duration": 7559,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_bcbe8b8dc8094f0a8541cd97",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564740546635,
+          "duration": 2284908,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type separately: earthquakes, volcanoes, floods, and wildfires.\", \"role\": \"user\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1696
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 129
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_62047ee1abd0489fac7cdf54",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564742831962,
+          "duration": 683,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"earthquake hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_8ac22a556528487c926e5818",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564742832010,
+          "duration": 682,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"volcano hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_6c9bd8cc18f148a2a38645f8",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564742832041,
+          "duration": 681,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"flood hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_04b8403ec67548a7b2568745",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564742832068,
+          "duration": 682,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"wildfire hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_b6a5959ab6e14c3193572d86",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564742832935,
+          "duration": 5,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_d3af5763326f4ac882d111e9",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564742833239,
+          "duration": 3256723,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type separately: earthquakes, volcanoes, floods, and wildfires.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"earthquake hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_pvoAOFDUjGkqh2Q7IOnWwpgI\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2d08195b16129db565702b5\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"volcano hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_rsWGcURLQKSTutwyKYajdgoL\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2e08195a644ca9058b932a3\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"flood hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_mJ9TkbPU7nkZ8uW33Mv0gVhL\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2ec8195ba05d0e94d7e3035\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"wildfire hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_FLCIsOAhJbuBO8npAKdL8yrX\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2f48195a9cf55c8619d9133\", \"status\": \"completed\"}, {\"call_id\": \"call_pvoAOFDUjGkqh2Q7IOnWwpgI\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_rsWGcURLQKSTutwyKYajdgoL\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_mJ9TkbPU7nkZ8uW33Mv0gVhL\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_FLCIsOAhJbuBO8npAKdL8yrX\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1998
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 175
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"It appears there was an error in retrieving results for each hazard type for Alaska. Let me retry the searches to provide a summary of key USGS publications on earthquakes, volcanoes, floods, and wildfires in Alaska.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_82304800e5f940748e62e91c",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564746090443,
+          "duration": 851,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"earthquake hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_f0959a1b47674454bd635abf",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564746090487,
+          "duration": 856,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"volcano hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_d7844625e8924480af017976",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564746090516,
+          "duration": 860,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"flood hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_8e70b0761ef44acdb072dc7e",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564746090547,
+          "duration": 857,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"wildfire hazards Alaska\", \"page_size\": 5, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_163c3776de244243bc1d50bc",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564746091575,
+          "duration": 6,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_49f5e39e45af4be5ba69afbd",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "5babc38737564486b28badc7fe350205",
+              "spanID": "span_8f84203cd5a049869a6b03b8"
+            }
+          ],
+          "startTime": 1775564746093240,
+          "duration": 4158491,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type separately: earthquakes, volcanoes, floods, and wildfires.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"earthquake hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_pvoAOFDUjGkqh2Q7IOnWwpgI\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2d08195b16129db565702b5\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"volcano hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_rsWGcURLQKSTutwyKYajdgoL\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2e08195a644ca9058b932a3\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"flood hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_mJ9TkbPU7nkZ8uW33Mv0gVhL\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2ec8195ba05d0e94d7e3035\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"wildfire hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_FLCIsOAhJbuBO8npAKdL8yrX\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c6b2f48195a9cf55c8619d9133\", \"status\": \"completed\"}, {\"call_id\": \"call_pvoAOFDUjGkqh2Q7IOnWwpgI\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_rsWGcURLQKSTutwyKYajdgoL\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_mJ9TkbPU7nkZ8uW33Mv0gVhL\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_FLCIsOAhJbuBO8npAKdL8yrX\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"id\": \"msg_08469ac899959d870069d4f7c765308195976d8cd78b3a35cc\", \"content\": [{\"annotations\": [], \"text\": \"It appears there was an error in retrieving results for each hazard type for Alaska. Let me retry the searches to provide a summary of key USGS publications on earthquakes, volcanoes, floods, and wildfires in Alaska.\", \"type\": \"output_text\", \"logprobs\": []}], \"role\": \"assistant\", \"status\": \"completed\", \"type\": \"message\"}, {\"arguments\": \"{\\\"query\\\":\\\"earthquake hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_ZEzHqEjCLcslGj6vPB0UY43Q\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c9da9c81958b1ee985a54ef4a0\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"volcano hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_guutGR6aU4u1ieGuehvqjRwr\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c9daac8195a172f8188554be02\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"flood hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_tClTGbUJ1wPqI17Y8qrpyENP\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c9dab48195a3243645b7dc9ca7\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"wildfire hazards Alaska\\\",\\\"page_size\\\":5,\\\"page_number\\\":1}\", \"call_id\": \"call_p7exPuNA7BY5nDsaRCQ9xVP6\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_08469ac899959d870069d4f7c9dabc8195ae2f838c50fc9a6f\", \"status\": \"completed\"}, {\"call_id\": \"call_ZEzHqEjCLcslGj6vPB0UY43Q\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_guutGR6aU4u1ieGuehvqjRwr\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_tClTGbUJ1wPqI17Y8qrpyENP\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_p7exPuNA7BY5nDsaRCQ9xVP6\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 2344
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 69
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"I'm experiencing technical issues connecting to the USGS Publications search at the moment, which is preventing me from providing the latest publication results for earthquake, volcano, flood, and wildfire hazards in Alaska.\\n\\nWould you like a general written summary of the primary natural hazards in Alaska, or would you like me to try searching again in a few moments?\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "5babc38737564486b28badc7fe350205",
+          "spanID": "span_8f84203cd5a049869a6b03b8",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564740546221,
+          "duration": 9706157,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "gen_ai.agent.tools",
+              "type": "string",
+              "value": "[\"search_publications\"]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

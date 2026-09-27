@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "867d2c4938fa4e11a8c30741bc4dcb15",
+      "spans": [
+        {
+          "traceID": "867d2c4938fa4e11a8c30741bc4dcb15",
+          "spanID": "c69c8d1a4c234778",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564283235348,
+          "duration": 5334842,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"I'm currently encountering repeated technical difficulties connecting to the USGS Publications database. This issue is preventing me from retrieving the most relevant emergency response literature for Hawaii volcanic eruptions and lava hazards right now.\\n\\nWould you like me to try again in a few moments, or would you prefer recommendations for other reliable sources or general guidance on volcanic emergency response for Hawaii based on best practices and public resources?\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Compile an emergency response literature kit for a Hawaii volcanic eruption. Search for 'volcano eruption Hawaii' and 'volcanic hazard Hawaii lava'.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "7f0433b9fd3042f6a86d88804b3f1e47",
+      "spans": [
+        {
+          "traceID": "7f0433b9fd3042f6a86d88804b3f1e47",
+          "spanID": "9b1ac83a08ac4694",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564255464464,
+          "duration": 2851321,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"There was a temporary issue retrieving USGS publications. I will try again to gather and synthesize research on:\\n\\n1. PFAS contamination\\n2. Groundwater contamination\\n3. PFAS and groundwater together\\n\\nPlease hold on a moment while I retry the searches.\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Synthesize USGS research on PFAS contamination and groundwater. Search separately for: PFAS contamination, groundwater contamination, and PFAS groundwater together.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

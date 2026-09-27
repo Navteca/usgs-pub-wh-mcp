@@ -1,0 +1,328 @@
+{
+  "data": [
+    {
+      "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+      "spans": [
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_1d2c1390f8ae4279bf14ce13",
+          "operationName": "mcplisttools",
+          "references": [],
+          "startTime": 1775564805333196,
+          "duration": 11092,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_1e4f9a4b11da4eb09b351532",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+              "spanID": "span_62bceaf9b8e04da6b6440700"
+            }
+          ],
+          "startTime": 1775564805345026,
+          "duration": 1146989,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS water quality monitoring and assessment publications that include links to datasets. Search for 'water quality monitoring data' and 'water quality assessment'. Identify data release and dataset-type assets.\", \"role\": \"user\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1701
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 72
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_3c967af3a8184b0698bc7e2f",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+              "spanID": "span_62bceaf9b8e04da6b6440700"
+            }
+          ],
+          "startTime": 1775564806492655,
+          "duration": 1033,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"water quality monitoring data\", \"page_size\": 20, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_68cc33f092c04e72b05a3389",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+              "spanID": "span_62bceaf9b8e04da6b6440700"
+            }
+          ],
+          "startTime": 1775564806492807,
+          "duration": 1021,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"water quality assessment\", \"page_size\": 20, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_dd669cb69280436080827cc4",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+              "spanID": "span_62bceaf9b8e04da6b6440700"
+            }
+          ],
+          "startTime": 1775564806494692,
+          "duration": 10,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_cd01de1fcbfb4273a2f7124b",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+              "spanID": "span_62bceaf9b8e04da6b6440700"
+            }
+          ],
+          "startTime": 1775564806496123,
+          "duration": 1197319,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS water quality monitoring and assessment publications that include links to datasets. Search for 'water quality monitoring data' and 'water quality assessment'. Identify data release and dataset-type assets.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"water quality monitoring data\\\",\\\"page_size\\\":20,\\\"page_number\\\":1}\", \"call_id\": \"call_g9AufN4FvXtsV3Z1ZqV7cQMT\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_031202821b50c59b0069d4f80662248193b83dde38e654f84d\", \"status\": \"completed\"}, {\"arguments\": \"{\\\"query\\\":\\\"water quality assessment\\\",\\\"page_size\\\":20,\\\"page_number\\\":1}\", \"call_id\": \"call_U10UnvjonA7QMKsw6wkGnd1M\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_031202821b50c59b0069d4f80662388193ba319812013bd177\", \"status\": \"completed\"}, {\"call_id\": \"call_g9AufN4FvXtsV3Z1ZqV7cQMT\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"call_id\": \"call_U10UnvjonA7QMKsw6wkGnd1M\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1850
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 57
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"It appears there was an error retrieving results from the USGS Publications database. Let me retry the search and ensure relevant water quality monitoring and assessment publications, particularly those with links to datasets and data releases, are identified for you. Please hold on a moment while I try again.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "4fc65cbec03d4f2796cd9fef2e068179",
+          "spanID": "span_62bceaf9b8e04da6b6440700",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564805344473,
+          "duration": 2349702,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "gen_ai.agent.tools",
+              "type": "string",
+              "value": "[\"search_publications\"]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

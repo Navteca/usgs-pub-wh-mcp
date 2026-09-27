@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "0e4a65e2e7a64240be1f978287acb7b4",
+      "spans": [
+        {
+          "traceID": "0e4a65e2e7a64240be1f978287acb7b4",
+          "spanID": "8dedef5dc43d4fd1",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564250770538,
+          "duration": 4692722,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"It appears there was an error retrieving USGS publications on natural hazards in Alaska. Would you like me to try the search again? If you have specific hazards or locations of extra concern within Alaska (such as towns or regions), please let me know, and I can tailor the search for you.\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type separately: earthquakes, volcanoes, floods, and wildfires.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

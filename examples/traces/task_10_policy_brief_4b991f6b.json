@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "4b991f6b59b74446ad55b77d38bded77",
+      "spans": [
+        {
+          "traceID": "4b991f6b59b74446ad55b77d38bded77",
+          "spanID": "780ede1ae0b64abb",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564294813702,
+          "duration": 3870233,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"It appears there is a temporary issue accessing the USGS publication database. I am currently unable to search or retrieve the latest publications directly. \\n\\nWould you like a sample policy brief based on a well-known USGS water availability assessment, such as the \\\"National Water Availability and Use Assessment Program\\\"? If so, I can proceed using widely cited summaries and references, or you can specify a particular region or assessment if you have one in mind. \\n\\nLet me know how you'd like to proceed!\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find a USGS water availability assessment publication and produce a one-page policy brief using its abstract and citation metadata.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

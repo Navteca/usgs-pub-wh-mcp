@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "traceID": "db82a1b507f84654a04f941d9b708c83",
+      "spans": [
+        {
+          "traceID": "db82a1b507f84654a04f941d9b708c83",
+          "spanID": "8e7cf25879534629",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564094001629,
+          "duration": 21870,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Identify research gaps in USGS arsenic groundwater studies. Search separately for: arsenic groundwater contamination, arsenic remediation groundwater, and arsenic groundwater monitoring. Then compare total_count across the three searches.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

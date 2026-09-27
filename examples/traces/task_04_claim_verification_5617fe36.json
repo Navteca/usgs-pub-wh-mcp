@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "5617fe3639084a698f9b4fe985f38f3f",
+      "spans": [
+        {
+          "traceID": "5617fe3639084a698f9b4fe985f38f3f",
+          "spanID": "bdbec99c1da14042",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564258316583,
+          "duration": 5928356,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"It appears there was a technical issue when searching for USGS publications using the keywords \\\"low-frequency earthquakes Mendocino slab.\\\" Let me try again with alternative keywords or approach. Would you like to suggest any specific terms, or should I try searching more broadly (e.g., \\\"earthquakes Mendocino region\\\")?\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find USGS publications about low-frequency earthquakes near the Mendocino slab. Then retrieve the most relevant one using its index_id to verify the details.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "traceID": "fab0dabecbb04898ab9f5cf16de23428",
+      "spans": [
+        {
+          "traceID": "fab0dabecbb04898ab9f5cf16de23428",
+          "spanID": "e362b7fe7d614074",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564268155435,
+          "duration": 10547081,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"Here are USGS publications with \\\"National Water Summary\\\" in the title:\\n\\n1. **National water summary on wetland resources** (Water Supply Paper 2425, 1996)\\n   - Overview of wetland resources in the U.S., including state-by-state descriptions.\\n   - [Full Report PDF](https://pubs.usgs.gov/wsp/2425/report.pdf)\\n   - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25395.htm)\\n\\n2. **Supplemental reference list for the National Water Summary on Wetland Resources** (Open-File Report 96-169, 1996) \\u2014 by K. Fry\\n   - [Full Report PDF](https://pubs.usgs.gov/of/1996/0169/report.pdf)\\n\\n3. **National water summary 1990-91: Hydrologic events and stream water quality** (Water Supply Paper 2400, 1993)\\n   - Documents stream water quality in the U.S. and Puerto Rico; provides congressional reporting context.\\n   - [Full Report PDF](https://pubs.usgs.gov/wsp/2400/report.pdf)\\n   - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25394.htm)\\n\\n4. **Hydrologic data-collection stations whose stream water quality data were available to prepare the 1990-91 National Water Summary on Stream Water Quality** (Open-File Report 93-29, 1993) \\u2014 by K.J. Lanfear\\n   - [Full Report PDF](https://pubs.usgs.gov/of/1993/0029/report.pdf)\\n\\n5. **National water summary 1988\\u201389: Hydrologic events and floods and droughts** (Water Supply Paper 2375, 1991)\\n   - Examines floods and droughts, including their extent and frequency across states.\\n   - [Full Report PDF](https://pubs.usgs.gov/wsp/2375/report.pdf)\\n   - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25393.htm)\\n\\n6. **National water summary 1987: Hydrologic events and water supply and use** (Water Supply Paper 2350, 1990)\\n   - Focuses on water use in the U.S. as of 1985, includes state-by-state information.\\n   - [Full Report PDF](https://pubs.usgs.gov/wsp/2350/report.pdf)\\n   - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25392.htm)\\n\\n7. **Methodology to derive water-quality trends for use by the National Water Summary Program of the U.S. Geological Survey** (Open-File Report 90-359, 1990) \\u2014 by K.J. Lanfear & R. Alexander\\n   - [Full Report PDF](https://pubs.usgs.gov/of/1990/0359/report.pdf)\\n\\n8. **National water summary 1986: Hydrologic events and ground-water quality** (Water Supply Paper 2325, 1988)\\n   - Covers ground-water quality, contamination sources, and protection issues.\\n   - [Full Report PDF](https://pubs.usgs.gov/wsp/2325/report.pdf)\\n   - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25391.htm)\\n\\n9. **National Water Summary Program** (Open-File Report 88-713, 1988) \\u2014 by Edith Chase\\n   - [Full Report PDF](https://pubs.usgs.gov/of/1988/0713/report.pdf)\\n\\n10. **National water summary 1985: Hydrologic events and surface-water resources** (Water Supply Paper 2300, 1986)\\n    - Focus on surface-water resource development and management.\\n    - [Full Report PDF](https://pubs.usgs.gov/wsp/2300/report.pdf)\\n    - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25390.htm)\\n\\n11. **National water summary 1984: Hydrologic events, selected water-quality trends, and ground-water resources** (Water Supply Paper 2275, 1985)\\n    - Reviews hydrologic extremes and trends in water quality.\\n    - [Full Report PDF](https://pubs.usgs.gov/wsp/2275/report.pdf)\\n    - [NGMDB Index Page](https://ngmdb.usgs.gov/Prodesc/proddesc_25396.htm)\\n\\n12. **National water summary 1983: Hydrologic events and issues** (Water Supply Paper 2250, 1984)\\n    - Documents hydrologic events and water quality issues in the U.S.\\n    - [Full Report PDF](https://pubs.usgs.gov/wsp/2250/report.pdf)\\n\\nThese documents serve as national compendia of water events, quality, usage, and issues by year or topic. If you need details or help narrowing to a specific year or theme, let me know!\"}]"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find USGS publications with 'National Water Summary' in the title. Use the title search parameter.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "data": [
+    {
+      "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+      "spans": [
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_412b387ba8bf4670b69383fc",
+          "operationName": "mcplisttools",
+          "references": [],
+          "startTime": 1775564594313759,
+          "duration": 8762,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_cd4ffc6d13c04aeab767833e",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564594328334,
+          "duration": 1134747,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find me recent USGS publications related to earthquakes.\", \"role\": \"user\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1674
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 28
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_d03189ce28c54294bbdbd0a8",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564595463827,
+          "duration": 630,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"earthquakes\", \"page_size\": 10, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_c5932ad0c7844f6084eec785",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564595464700,
+          "duration": 8,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_dbba7a92e05d4718a50f365b",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564595465420,
+          "duration": 891346,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find me recent USGS publications related to earthquakes.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"earthquakes\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_bwxtk97xlTdj5SH0RQFmFHBm\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0790634c19cfdc7b0069d4f7331bf08195bf75963bd2843a82\", \"status\": \"completed\"}, {\"call_id\": \"call_bwxtk97xlTdj5SH0RQFmFHBm\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1751
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 28
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_eb2663bd04e1478b8b96978e",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564596357267,
+          "duration": 398,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"earthquakes\", \"page_size\": 10, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_e75a9953bc964778a043a45e",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564596357823,
+          "duration": 6,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_f00ee1d3edd14dd997c6030d",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+              "spanID": "span_f8b9dd303b2f43aba4e5b989"
+            }
+          ],
+          "startTime": 1775564596358117,
+          "duration": 1314471,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find me recent USGS publications related to earthquakes.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"earthquakes\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_bwxtk97xlTdj5SH0RQFmFHBm\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0790634c19cfdc7b0069d4f7331bf08195bf75963bd2843a82\", \"status\": \"completed\"}, {\"call_id\": \"call_bwxtk97xlTdj5SH0RQFmFHBm\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"arguments\": \"{\\\"query\\\":\\\"earthquakes\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_N1pvNzBKajwzXA0XOUeIjE62\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0790634c19cfdc7b0069d4f734121081958af58b8eb235e437\", \"status\": \"completed\"}, {\"call_id\": \"call_N1pvNzBKajwzXA0XOUeIjE62\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1828
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 50
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"It appears there was an error retrieving USGS publications related to earthquakes. Would you like a summary of general recent earthquake research, or should I try the search again for official USGS publications? Let me know how you\\u2019d like to proceed!\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6005c98a38ed4a75b321c38dd7c0c3ec",
+          "spanID": "span_f8b9dd303b2f43aba4e5b989",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564594322741,
+          "duration": 3350294,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "gen_ai.agent.tools",
+              "type": "string",
+              "value": "[\"search_publications\"]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

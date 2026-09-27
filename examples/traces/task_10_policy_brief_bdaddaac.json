@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "traceID": "bdaddaac2b714dba945ccdf80e1065d9",
+      "spans": [
+        {
+          "traceID": "bdaddaac2b714dba945ccdf80e1065d9",
+          "spanID": "3dac5056d1694216",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564094059840,
+          "duration": 17853,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find a USGS water availability assessment publication and produce a one-page policy brief using its abstract and citation metadata.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

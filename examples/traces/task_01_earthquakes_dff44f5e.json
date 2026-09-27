@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "traceID": "dff44f5ee49545adbacfd404f4ee36c1",
+      "spans": [
+        {
+          "traceID": "dff44f5ee49545adbacfd404f4ee36c1",
+          "spanID": "eef1d647255b4aff",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564093828959,
+          "duration": 79038,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find me recent USGS publications related to earthquakes.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

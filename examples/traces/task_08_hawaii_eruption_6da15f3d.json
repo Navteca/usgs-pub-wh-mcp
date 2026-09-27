@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "traceID": "6da15f3d9855419eb309212a24afc071",
+      "spans": [
+        {
+          "traceID": "6da15f3d9855419eb309212a24afc071",
+          "spanID": "3fa3a535a7d64446",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564094023942,
+          "duration": 17932,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Compile an emergency response literature kit for a Hawaii volcanic eruption. Search for 'volcano eruption Hawaii' and 'volcanic hazard Hawaii lava'.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

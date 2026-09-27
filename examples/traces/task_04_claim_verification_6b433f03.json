@@ -1,0 +1,553 @@
+{
+  "data": [
+    {
+      "traceID": "6b433f0318be4ce197b22df2029bbca6",
+      "spans": [
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_c2c23526ebc545248b371779",
+          "operationName": "mcplisttools",
+          "references": [],
+          "startTime": 1775564757171868,
+          "duration": 7332,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_ada6f6c6ff57413fb1b4a0f2",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564757179662,
+          "duration": 1061720,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS publications about low-frequency earthquakes near the Mendocino slab. Then retrieve the most relevant one using its index_id to verify the details.\", \"role\": \"user\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1694
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 32
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_5de125409a474ca1a595d697",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564758241724,
+          "duration": 334,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"low-frequency earthquakes Mendocino slab\", \"page_size\": 10, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_c3193fd4f9a54b55a4793678",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564758242235,
+          "duration": 4,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_29b38cd08f5d408eba28b24d",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564758242493,
+          "duration": 908668,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS publications about low-frequency earthquakes near the Mendocino slab. Then retrieve the most relevant one using its index_id to verify the details.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"low-frequency earthquakes Mendocino slab\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_X78nSj0SmaxSPRKnVXeJn7rt\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0bd53b0096c07aee0069d4f7d5c3f88195b4057fc42059da15\", \"status\": \"completed\"}, {\"call_id\": \"call_X78nSj0SmaxSPRKnVXeJn7rt\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1775
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 31
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_6681e9baae4a4bd9a70a9445",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564759151688,
+          "duration": 423,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"low-frequency earthquakes Mendocino\", \"page_size\": 10, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_88d1865488774aa294466320",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564759152341,
+          "duration": 6,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_a33508e0a7f049ebafb4e15c",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564759152691,
+          "duration": 2726271,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS publications about low-frequency earthquakes near the Mendocino slab. Then retrieve the most relevant one using its index_id to verify the details.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"low-frequency earthquakes Mendocino slab\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_X78nSj0SmaxSPRKnVXeJn7rt\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0bd53b0096c07aee0069d4f7d5c3f88195b4057fc42059da15\", \"status\": \"completed\"}, {\"call_id\": \"call_X78nSj0SmaxSPRKnVXeJn7rt\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"arguments\": \"{\\\"query\\\":\\\"low-frequency earthquakes Mendocino\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_MuuvPEGSnQ5bnZ1H0IgBDoEH\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0bd53b0096c07aee0069d4f7d6d62c8195b6049f4ac4957377\", \"status\": \"completed\"}, {\"call_id\": \"call_MuuvPEGSnQ5bnZ1H0IgBDoEH\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1857
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 68
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"There was a technical error while searching the USGS Publications Warehouse. I'll attempt the search again with the query \\\"low-frequency earthquakes Mendocino.\\\" Please hold on a moment.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_5bd6372010444357aa9c279c",
+          "operationName": "execute_tool search_publications",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564761879634,
+          "duration": 421,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "execute_tool"
+            },
+            {
+              "key": "gen_ai.tool.name",
+              "type": "string",
+              "value": "search_publications"
+            },
+            {
+              "key": "gen_ai.tool.call.arguments",
+              "type": "string",
+              "value": "{\"query\": \"low-frequency earthquakes Mendocino\", \"page_size\": 10, \"page_number\": 1}"
+            },
+            {
+              "key": "gen_ai.tool.call.result",
+              "type": "string",
+              "value": "An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_93b865cf9daf41cba3009874",
+          "operationName": "mcplisttools",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564761880280,
+          "duration": 8,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_2a7a0148a7ce42d48f5f4a85",
+          "operationName": "llm_generation",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6b433f0318be4ce197b22df2029bbca6",
+              "spanID": "span_2f62e607809f46febb172135"
+            }
+          ],
+          "startTime": 1775564761880613,
+          "duration": 3034013,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "key": "gen_ai.request.model",
+              "type": "string",
+              "value": "gpt-4.1-2025-04-14"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"content\": \"Find USGS publications about low-frequency earthquakes near the Mendocino slab. Then retrieve the most relevant one using its index_id to verify the details.\", \"role\": \"user\"}, {\"arguments\": \"{\\\"query\\\":\\\"low-frequency earthquakes Mendocino slab\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_X78nSj0SmaxSPRKnVXeJn7rt\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0bd53b0096c07aee0069d4f7d5c3f88195b4057fc42059da15\", \"status\": \"completed\"}, {\"call_id\": \"call_X78nSj0SmaxSPRKnVXeJn7rt\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"arguments\": \"{\\\"query\\\":\\\"low-frequency earthquakes Mendocino\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_MuuvPEGSnQ5bnZ1H0IgBDoEH\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0bd53b0096c07aee0069d4f7d6d62c8195b6049f4ac4957377\", \"status\": \"completed\"}, {\"call_id\": \"call_MuuvPEGSnQ5bnZ1H0IgBDoEH\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}, {\"id\": \"msg_0bd53b0096c07aee0069d4f7d817088195912cc998706146a5\", \"content\": [{\"annotations\": [], \"text\": \"There was a technical error while searching the USGS Publications Warehouse. I'll attempt the search again with the query \\\"low-frequency earthquakes Mendocino.\\\" Please hold on a moment.\", \"type\": \"output_text\", \"logprobs\": []}], \"role\": \"assistant\", \"status\": \"completed\", \"type\": \"message\"}, {\"arguments\": \"{\\\"query\\\":\\\"low-frequency earthquakes Mendocino\\\",\\\"page_size\\\":10,\\\"page_number\\\":1}\", \"call_id\": \"call_ctmdZpvGkkpjCQgmtIuT2ppr\", \"name\": \"search_publications\", \"type\": \"function_call\", \"id\": \"fc_0bd53b0096c07aee0069d4f7d989ec8195a6cbec990f243dc1\", \"status\": \"completed\"}, {\"call_id\": \"call_ctmdZpvGkkpjCQgmtIuT2ppr\", \"output\": \"An error occurred while running the tool. Please try again. Error: Failed to call tool 'search_publications' on MCP server 'USGS Publications MCP': missing required parameters: index_id, title\", \"type\": \"function_call_output\"}]"
+            },
+            {
+              "key": "gen_ai.usage.input_tokens",
+              "type": "int64",
+              "value": 1974
+            },
+            {
+              "key": "gen_ai.usage.output_tokens",
+              "type": "int64",
+              "value": 67
+            },
+            {
+              "key": "gen_ai.output.messages",
+              "type": "string",
+              "value": "[{\"role\": \"assistant\", \"content\": \"There seems to be a technical issue with retrieving USGS publications at this moment. The search function is currently not working properly. \\n\\nWould you like a summary of what is generally known about low-frequency earthquakes near the Mendocino slab from other scientific sources, or would you like to try again later when the system is functioning?\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6b433f0318be4ce197b22df2029bbca6",
+          "spanID": "span_2f62e607809f46febb172135",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564757179311,
+          "duration": 7735743,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "gen_ai.agent.tools",
+              "type": "string",
+              "value": "[\"search_publications\"]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

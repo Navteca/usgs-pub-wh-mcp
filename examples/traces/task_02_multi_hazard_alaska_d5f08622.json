@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "traceID": "d5f0862274d844cf98629b5ebb3fa35e",
+      "spans": [
+        {
+          "traceID": "d5f0862274d844cf98629b5ebb3fa35e",
+          "spanID": "3119b747eb654a64",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564093908401,
+          "duration": 18935,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"What natural hazards should I worry about in Alaska? Please search for publications on each major hazard type separately: earthquakes, volcanoes, floods, and wildfires.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "traceID": "6a5f01ead6ae48e4b540bd169d1f2c2f",
+      "spans": [
+        {
+          "traceID": "6a5f01ead6ae48e4b540bd169d1f2c2f",
+          "spanID": "fa38807ce0274485",
+          "operationName": "agent USGS Research Agent",
+          "references": [],
+          "startTime": 1775564093984498,
+          "duration": 16660,
+          "tags": [
+            {
+              "key": "gen_ai.operation.name",
+              "type": "string",
+              "value": "invoke_agent"
+            },
+            {
+              "key": "gen_ai.agent.name",
+              "type": "string",
+              "value": "USGS Research Agent"
+            },
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "openai-agents-sdk"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "internal"
+            },
+            {
+              "key": "gen_ai.input.messages",
+              "type": "string",
+              "value": "[{\"role\": \"user\", \"content\": \"Find USGS publications with 'National Water Summary' in the title. Use the title search parameter.\"}]"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "usgs-warehouse-mcp",
+          "tags": [
+            {
+              "key": "service.name",
+              "type": "string",
+              "value": "usgs-warehouse-mcp"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}
